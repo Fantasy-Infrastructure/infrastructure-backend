@@ -288,7 +288,6 @@ github.com/pulumi/pulumi-aws/sdk/v6/go/aws/route53
 github.com/pulumi/pulumi-aws/sdk/v6/go/aws/s3
 github.com/pulumi/pulumi-aws/sdk/v6/go/aws/servicediscovery
 github.com/pulumi/pulumi-aws/sdk/v6/go/aws/ssm
-github.com/pulumi/pulumi-aws/sdk/v6/go/aws/vpc
 # github.com/pulumi/pulumi-awsx/sdk/v2 v2.4.0
 ## explicit; go 1.21
 github.com/pulumi/pulumi-awsx/sdk/v2/go/awsx/ec2
@@ -297,7 +296,7 @@ github.com/pulumi/pulumi-awsx/sdk/v2/go/awsx/internal
 ## explicit; go 1.21
 github.com/pulumi/pulumi-docker/sdk/v4/go/docker
 github.com/pulumi/pulumi-docker/sdk/v4/go/docker/internal
-# github.com/pulumi/pulumi-random/sdk/v4 v4.15.0
+# github.com/pulumi/pulumi-random/sdk/v4 v4.15.1
 ## explicit; go 1.21
 github.com/pulumi/pulumi-random/sdk/v4/go/random
 github.com/pulumi/pulumi-random/sdk/v4/go/random/internal
