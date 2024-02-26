@@ -5,10 +5,10 @@ go 1.21
 toolchain go1.21.1
 
 require (
-	github.com/pulumi/pulumi-aws/sdk/v6 v6.20.1
+	github.com/pulumi/pulumi-aws/sdk/v6 v6.23.0
 	github.com/pulumi/pulumi-awsx/sdk/v2 v2.5.0
 	github.com/pulumi/pulumi-random/sdk/v4 v4.15.1
-	github.com/pulumi/pulumi/sdk/v3 v3.104.2
+	github.com/pulumi/pulumi/sdk/v3 v3.105.0
 )
 
 require (
