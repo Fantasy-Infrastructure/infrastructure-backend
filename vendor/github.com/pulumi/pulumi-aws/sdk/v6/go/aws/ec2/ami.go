@@ -34,7 +34,14 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
+//			// Create an AMI that will start a machine whose root device is backed by
+//			// an EBS volume populated from a snapshot. We assume that such a snapshot
+//			// already exists with the id "snap-xxxxxxxx".
 //			_, err := ec2.NewAmi(ctx, "example", &ec2.AmiArgs{
+//				Name:               pulumi.String("example"),
+//				VirtualizationType: pulumi.String("hvm"),
+//				RootDeviceName:     pulumi.String("/dev/xvda"),
+//				ImdsSupport:        pulumi.String("v2.0"),
 //				EbsBlockDevices: ec2.AmiEbsBlockDeviceArray{
 //					&ec2.AmiEbsBlockDeviceArgs{
 //						DeviceName: pulumi.String("/dev/xvda"),
@@ -42,9 +49,6 @@ import (
 //						VolumeSize: pulumi.Int(8),
 //					},
 //				},
-//				ImdsSupport:        pulumi.String("v2.0"),
-//				RootDeviceName:     pulumi.String("/dev/xvda"),
-//				VirtualizationType: pulumi.String("hvm"),
 //			})
 //			if err != nil {
 //				return err
@@ -143,10 +147,6 @@ func NewAmi(ctx *pulumi.Context,
 		args = &AmiArgs{}
 	}
 
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource Ami
 	err := ctx.RegisterResource("aws:ec2/ami:Ami", name, args, &resource, opts...)

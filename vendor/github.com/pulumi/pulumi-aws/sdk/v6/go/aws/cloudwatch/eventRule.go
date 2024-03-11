@@ -42,18 +42,22 @@ import (
 // }
 // json0 := string(tmpJSON0)
 // console, err := cloudwatch.NewEventRule(ctx, "console", &cloudwatch.EventRuleArgs{
+// Name: pulumi.String("capture-aws-sign-in"),
 // Description: pulumi.String("Capture each AWS Console Sign In"),
 // EventPattern: pulumi.String(json0),
 // })
 // if err != nil {
 // return err
 // }
-// awsLogins, err := sns.NewTopic(ctx, "awsLogins", nil)
+// awsLogins, err := sns.NewTopic(ctx, "aws_logins", &sns.TopicArgs{
+// Name: pulumi.String("aws-console-logins"),
+// })
 // if err != nil {
 // return err
 // }
 // _, err = cloudwatch.NewEventTarget(ctx, "sns", &cloudwatch.EventTargetArgs{
 // Rule: console.Name,
+// TargetId: pulumi.String("SendToSNS"),
 // Arn: awsLogins.Arn,
 // })
 // if err != nil {
@@ -137,6 +141,8 @@ type EventRule struct {
 	// To also enable the rule for events delivered by CloudTrail, set `state` to `ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS`.
 	// Defaults to `ENABLED`.
 	// Conflicts with `isEnabled`.
+	//
+	// **NOTE:** The rule state  `ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS` cannot be used in conjunction with the `scheduleExpression` argument.
 	State pulumi.StringPtrOutput `pulumi:"state"`
 	// A map of tags to assign to the resource. .If configured with a provider `defaultTags` configuration block present, tags with matching keys will overwrite those defined at the provider-level.
 	Tags pulumi.StringMapOutput `pulumi:"tags"`
@@ -153,10 +159,6 @@ func NewEventRule(ctx *pulumi.Context,
 		args = &EventRuleArgs{}
 	}
 
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource EventRule
 	err := ctx.RegisterResource("aws:cloudwatch/eventRule:EventRule", name, args, &resource, opts...)
@@ -209,6 +211,8 @@ type eventRuleState struct {
 	// To also enable the rule for events delivered by CloudTrail, set `state` to `ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS`.
 	// Defaults to `ENABLED`.
 	// Conflicts with `isEnabled`.
+	//
+	// **NOTE:** The rule state  `ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS` cannot be used in conjunction with the `scheduleExpression` argument.
 	State *string `pulumi:"state"`
 	// A map of tags to assign to the resource. .If configured with a provider `defaultTags` configuration block present, tags with matching keys will overwrite those defined at the provider-level.
 	Tags map[string]string `pulumi:"tags"`
@@ -248,6 +252,8 @@ type EventRuleState struct {
 	// To also enable the rule for events delivered by CloudTrail, set `state` to `ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS`.
 	// Defaults to `ENABLED`.
 	// Conflicts with `isEnabled`.
+	//
+	// **NOTE:** The rule state  `ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS` cannot be used in conjunction with the `scheduleExpression` argument.
 	State pulumi.StringPtrInput
 	// A map of tags to assign to the resource. .If configured with a provider `defaultTags` configuration block present, tags with matching keys will overwrite those defined at the provider-level.
 	Tags pulumi.StringMapInput
@@ -289,6 +295,8 @@ type eventRuleArgs struct {
 	// To also enable the rule for events delivered by CloudTrail, set `state` to `ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS`.
 	// Defaults to `ENABLED`.
 	// Conflicts with `isEnabled`.
+	//
+	// **NOTE:** The rule state  `ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS` cannot be used in conjunction with the `scheduleExpression` argument.
 	State *string `pulumi:"state"`
 	// A map of tags to assign to the resource. .If configured with a provider `defaultTags` configuration block present, tags with matching keys will overwrite those defined at the provider-level.
 	Tags map[string]string `pulumi:"tags"`
@@ -323,6 +331,8 @@ type EventRuleArgs struct {
 	// To also enable the rule for events delivered by CloudTrail, set `state` to `ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS`.
 	// Defaults to `ENABLED`.
 	// Conflicts with `isEnabled`.
+	//
+	// **NOTE:** The rule state  `ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS` cannot be used in conjunction with the `scheduleExpression` argument.
 	State pulumi.StringPtrInput
 	// A map of tags to assign to the resource. .If configured with a provider `defaultTags` configuration block present, tags with matching keys will overwrite those defined at the provider-level.
 	Tags pulumi.StringMapInput
@@ -471,6 +481,8 @@ func (o EventRuleOutput) ScheduleExpression() pulumi.StringPtrOutput {
 // To also enable the rule for events delivered by CloudTrail, set `state` to `ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS`.
 // Defaults to `ENABLED`.
 // Conflicts with `isEnabled`.
+//
+// **NOTE:** The rule state  `ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS` cannot be used in conjunction with the `scheduleExpression` argument.
 func (o EventRuleOutput) State() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *EventRule) pulumi.StringPtrOutput { return v.State }).(pulumi.StringPtrOutput)
 }

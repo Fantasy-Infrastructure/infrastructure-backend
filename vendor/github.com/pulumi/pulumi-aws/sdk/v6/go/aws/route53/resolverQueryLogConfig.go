@@ -29,7 +29,8 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := route53.NewResolverQueryLogConfig(ctx, "example", &route53.ResolverQueryLogConfigArgs{
-//				DestinationArn: pulumi.Any(aws_s3_bucket.Example.Arn),
+//				Name:           pulumi.String("example"),
+//				DestinationArn: pulumi.Any(exampleAwsS3Bucket.Arn),
 //				Tags: pulumi.StringMap{
 //					"Environment": pulumi.String("Prod"),
 //				},
@@ -88,10 +89,6 @@ func NewResolverQueryLogConfig(ctx *pulumi.Context,
 	if args.DestinationArn == nil {
 		return nil, errors.New("invalid value for required argument 'DestinationArn'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource ResolverQueryLogConfig
 	err := ctx.RegisterResource("aws:route53/resolverQueryLogConfig:ResolverQueryLogConfig", name, args, &resource, opts...)

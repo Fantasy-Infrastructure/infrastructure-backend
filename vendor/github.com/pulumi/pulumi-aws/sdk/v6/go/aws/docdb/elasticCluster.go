@@ -30,6 +30,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := docdb.NewElasticCluster(ctx, "example", &docdb.ElasticClusterArgs{
+//				Name:              pulumi.String("my-docdb-cluster"),
 //				AdminUserName:     pulumi.String("foo"),
 //				AdminUserPassword: pulumi.String("mustbeeightchars"),
 //				AuthType:          pulumi.String("PLAIN_TEXT"),
@@ -117,7 +118,6 @@ func NewElasticCluster(ctx *pulumi.Context,
 	}
 	secrets := pulumi.AdditionalSecretOutputs([]string{
 		"adminUserPassword",
-		"tagsAll",
 	})
 	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)

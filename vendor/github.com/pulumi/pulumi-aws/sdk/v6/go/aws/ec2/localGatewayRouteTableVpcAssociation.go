@@ -28,20 +28,20 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			exampleLocalGatewayRouteTable, err := ec2.GetLocalGatewayRouteTable(ctx, &ec2.GetLocalGatewayRouteTableArgs{
+//			example, err := ec2.GetLocalGatewayRouteTable(ctx, &ec2.GetLocalGatewayRouteTableArgs{
 //				OutpostArn: pulumi.StringRef("arn:aws:outposts:us-west-2:123456789012:outpost/op-1234567890abcdef"),
 //			}, nil)
 //			if err != nil {
 //				return err
 //			}
-//			exampleVpc, err := ec2.NewVpc(ctx, "exampleVpc", &ec2.VpcArgs{
+//			exampleVpc, err := ec2.NewVpc(ctx, "example", &ec2.VpcArgs{
 //				CidrBlock: pulumi.String("10.0.0.0/16"),
 //			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = ec2.NewLocalGatewayRouteTableVpcAssociation(ctx, "exampleLocalGatewayRouteTableVpcAssociation", &ec2.LocalGatewayRouteTableVpcAssociationArgs{
-//				LocalGatewayRouteTableId: *pulumi.String(exampleLocalGatewayRouteTable.Id),
+//			_, err = ec2.NewLocalGatewayRouteTableVpcAssociation(ctx, "example", &ec2.LocalGatewayRouteTableVpcAssociationArgs{
+//				LocalGatewayRouteTableId: *pulumi.String(example.Id),
 //				VpcId:                    exampleVpc.ID(),
 //			})
 //			if err != nil {
@@ -93,10 +93,6 @@ func NewLocalGatewayRouteTableVpcAssociation(ctx *pulumi.Context,
 	if args.VpcId == nil {
 		return nil, errors.New("invalid value for required argument 'VpcId'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource LocalGatewayRouteTableVpcAssociation
 	err := ctx.RegisterResource("aws:ec2/localGatewayRouteTableVpcAssociation:LocalGatewayRouteTableVpcAssociation", name, args, &resource, opts...)

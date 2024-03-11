@@ -29,7 +29,9 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			_, err := cloudwatch.NewEventBus(ctx, "messenger", nil)
+//			_, err := cloudwatch.NewEventBus(ctx, "messenger", &cloudwatch.EventBusArgs{
+//				Name: pulumi.String("chat-messages"),
+//			})
 //			if err != nil {
 //				return err
 //			}
@@ -51,14 +53,15 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			examplepartnerEventSource, err := cloudwatch.GetEventSource(ctx, &cloudwatch.GetEventSourceArgs{
+//			examplepartner, err := cloudwatch.GetEventSource(ctx, &cloudwatch.GetEventSourceArgs{
 //				NamePrefix: pulumi.StringRef("aws.partner/examplepartner.com"),
 //			}, nil)
 //			if err != nil {
 //				return err
 //			}
-//			_, err = cloudwatch.NewEventBus(ctx, "examplepartnerEventBus", &cloudwatch.EventBusArgs{
-//				EventSourceName: *pulumi.String(examplepartnerEventSource.Name),
+//			_, err = cloudwatch.NewEventBus(ctx, "examplepartner", &cloudwatch.EventBusArgs{
+//				Name:            *pulumi.String(examplepartner.Name),
+//				EventSourceName: *pulumi.String(examplepartner.Name),
 //			})
 //			if err != nil {
 //				return err
@@ -102,10 +105,6 @@ func NewEventBus(ctx *pulumi.Context,
 		args = &EventBusArgs{}
 	}
 
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource EventBus
 	err := ctx.RegisterResource("aws:cloudwatch/eventBus:EventBus", name, args, &resource, opts...)

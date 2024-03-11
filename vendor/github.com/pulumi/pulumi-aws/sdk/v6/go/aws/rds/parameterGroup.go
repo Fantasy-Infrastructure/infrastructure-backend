@@ -42,6 +42,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := rds.NewParameterGroup(ctx, "default", &rds.ParameterGroupArgs{
+//				Name:   pulumi.String("rds-pg"),
 //				Family: pulumi.String("mysql5.6"),
 //				Parameters: rds.ParameterGroupParameterArray{
 //					&rds.ParameterGroupParameterArgs{
@@ -82,7 +83,8 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			exampleParameterGroup, err := rds.NewParameterGroup(ctx, "exampleParameterGroup", &rds.ParameterGroupArgs{
+//			example, err := rds.NewParameterGroup(ctx, "example", &rds.ParameterGroupArgs{
+//				Name:   pulumi.String("my-pg"),
 //				Family: pulumi.String("postgres13"),
 //				Parameters: rds.ParameterGroupParameterArray{
 //					&rds.ParameterGroupParameterArgs{
@@ -94,8 +96,8 @@ import (
 //			if err != nil {
 //				return err
 //			}
-//			_, err = rds.NewInstance(ctx, "exampleInstance", &rds.InstanceArgs{
-//				ParameterGroupName: exampleParameterGroup.Name,
+//			_, err = rds.NewInstance(ctx, "example", &rds.InstanceArgs{
+//				ParameterGroupName: example.Name,
 //				ApplyImmediately:   pulumi.Bool(true),
 //			})
 //			if err != nil {
@@ -152,10 +154,6 @@ func NewParameterGroup(ctx *pulumi.Context,
 	if args.Description == nil {
 		args.Description = pulumi.StringPtr("Managed by Pulumi")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource ParameterGroup
 	err := ctx.RegisterResource("aws:rds/parameterGroup:ParameterGroup", name, args, &resource, opts...)

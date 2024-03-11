@@ -33,9 +33,10 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := s3.NewBucketV2(ctx, "example", &s3.BucketV2Args{
+//				Bucket: pulumi.String("my-tf-test-bucket"),
 //				Tags: pulumi.StringMap{
-//					"Environment": pulumi.String("Dev"),
 //					"Name":        pulumi.String("My bucket"),
+//					"Environment": pulumi.String("Dev"),
 //				},
 //			})
 //			if err != nil {
@@ -175,10 +176,6 @@ func NewBucketV2(ctx *pulumi.Context,
 		},
 	})
 	opts = append(opts, aliases)
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource BucketV2
 	err := ctx.RegisterResource("aws:s3/bucketV2:BucketV2", name, args, &resource, opts...)

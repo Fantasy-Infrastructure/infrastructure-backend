@@ -29,8 +29,8 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			path, err := ec2.NewNetworkInsightsPath(ctx, "path", &ec2.NetworkInsightsPathArgs{
-//				Source:      pulumi.Any(aws_network_interface.Source.Id),
-//				Destination: pulumi.Any(aws_network_interface.Destination.Id),
+//				Source:      pulumi.Any(source.Id),
+//				Destination: pulumi.Any(destination.Id),
 //				Protocol:    pulumi.String("tcp"),
 //			})
 //			if err != nil {
@@ -106,10 +106,6 @@ func NewNetworkInsightsAnalysis(ctx *pulumi.Context,
 	if args.NetworkInsightsPathId == nil {
 		return nil, errors.New("invalid value for required argument 'NetworkInsightsPathId'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource NetworkInsightsAnalysis
 	err := ctx.RegisterResource("aws:ec2/networkInsightsAnalysis:NetworkInsightsAnalysis", name, args, &resource, opts...)

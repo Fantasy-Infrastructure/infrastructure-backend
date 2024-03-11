@@ -32,8 +32,8 @@ import (
 //				LaunchTemplateConfigs: ec2.FleetLaunchTemplateConfigArray{
 //					&ec2.FleetLaunchTemplateConfigArgs{
 //						LaunchTemplateSpecification: &ec2.FleetLaunchTemplateConfigLaunchTemplateSpecificationArgs{
-//							LaunchTemplateId: pulumi.Any(aws_launch_template.Example.Id),
-//							Version:          pulumi.Any(aws_launch_template.Example.Latest_version),
+//							LaunchTemplateId: pulumi.Any(exampleAwsLaunchTemplate.Id),
+//							Version:          pulumi.Any(exampleAwsLaunchTemplate.LatestVersion),
 //						},
 //					},
 //				},
@@ -118,10 +118,6 @@ func NewFleet(ctx *pulumi.Context,
 	if args.TargetCapacitySpecification == nil {
 		return nil, errors.New("invalid value for required argument 'TargetCapacitySpecification'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource Fleet
 	err := ctx.RegisterResource("aws:ec2/fleet:Fleet", name, args, &resource, opts...)

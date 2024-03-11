@@ -30,12 +30,12 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := route53.NewRecord(ctx, "www", &route53.RecordArgs{
-//				ZoneId: pulumi.Any(aws_route53_zone.Primary.Zone_id),
+//				ZoneId: pulumi.Any(primary.ZoneId),
 //				Name:   pulumi.String("www.example.com"),
 //				Type:   pulumi.String("A"),
 //				Ttl:    pulumi.Int(300),
 //				Records: pulumi.StringArray{
-//					aws_eip.Lb.Public_ip,
+//					lb.PublicIp,
 //				},
 //			})
 //			if err != nil {
@@ -63,7 +63,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := route53.NewRecord(ctx, "www-dev", &route53.RecordArgs{
-//				ZoneId: pulumi.Any(aws_route53_zone.Primary.Zone_id),
+//				ZoneId: pulumi.Any(primary.ZoneId),
 //				Name:   pulumi.String("www"),
 //				Type:   pulumi.String("CNAME"),
 //				Ttl:    pulumi.Int(5),
@@ -81,7 +81,7 @@ import (
 //				return err
 //			}
 //			_, err = route53.NewRecord(ctx, "www-live", &route53.RecordArgs{
-//				ZoneId: pulumi.Any(aws_route53_zone.Primary.Zone_id),
+//				ZoneId: pulumi.Any(primary.ZoneId),
 //				Name:   pulumi.String("www"),
 //				Type:   pulumi.String("CNAME"),
 //				Ttl:    pulumi.Int(5),
@@ -93,6 +93,46 @@ import (
 //				SetIdentifier: pulumi.String("live"),
 //				Records: pulumi.StringArray{
 //					pulumi.String("live.example.com"),
+//				},
+//			})
+//			if err != nil {
+//				return err
+//			}
+//			return nil
+//		})
+//	}
+//
+// ```
+// ### Geoproximity routing policy
+//
+// ```go
+// package main
+//
+// import (
+//
+//	"github.com/pulumi/pulumi-aws/sdk/v6/go/aws/route53"
+//	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
+//
+// )
+//
+//	func main() {
+//		pulumi.Run(func(ctx *pulumi.Context) error {
+//			_, err := route53.NewRecord(ctx, "www", &route53.RecordArgs{
+//				ZoneId: pulumi.Any(primary.ZoneId),
+//				Name:   pulumi.String("www.example.com"),
+//				Type:   pulumi.String("CNAME"),
+//				Ttl:    pulumi.Int(300),
+//				GeoproximityRoutingPolicy: &route53.RecordGeoproximityRoutingPolicyArgs{
+//					Coordinates: route53.RecordGeoproximityRoutingPolicyCoordinateArray{
+//						&route53.RecordGeoproximityRoutingPolicyCoordinateArgs{
+//							Latitude:  pulumi.String("49.22"),
+//							Longitude: pulumi.String("-74.01"),
+//						},
+//					},
+//				},
+//				SetIdentifier: pulumi.String("dev"),
+//				Records: pulumi.StringArray{
+//					pulumi.String("dev.example.com"),
 //				},
 //			})
 //			if err != nil {
@@ -125,6 +165,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			main, err := elb.NewLoadBalancer(ctx, "main", &elb.LoadBalancerArgs{
+//				Name: pulumi.String("foobar-elb"),
 //				AvailabilityZones: pulumi.StringArray{
 //					pulumi.String("us-east-1c"),
 //				},
@@ -141,7 +182,7 @@ import (
 //				return err
 //			}
 //			_, err = route53.NewRecord(ctx, "www", &route53.RecordArgs{
-//				ZoneId: pulumi.Any(aws_route53_zone.Primary.Zone_id),
+//				ZoneId: pulumi.Any(primary.ZoneId),
 //				Name:   pulumi.String("example.com"),
 //				Type:   pulumi.String("A"),
 //				Aliases: route53.RecordAliasArray{
@@ -176,27 +217,29 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			exampleZone, err := route53.NewZone(ctx, "exampleZone", nil)
+//			example, err := route53.NewZone(ctx, "example", &route53.ZoneArgs{
+//				Name: pulumi.String("test.example.com"),
+//			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = route53.NewRecord(ctx, "exampleRecord", &route53.RecordArgs{
+//			_, err = route53.NewRecord(ctx, "example", &route53.RecordArgs{
 //				AllowOverwrite: pulumi.Bool(true),
 //				Name:           pulumi.String("test.example.com"),
 //				Ttl:            pulumi.Int(172800),
 //				Type:           pulumi.String("NS"),
-//				ZoneId:         exampleZone.ZoneId,
+//				ZoneId:         example.ZoneId,
 //				Records: pulumi.StringArray{
-//					exampleZone.NameServers.ApplyT(func(nameServers []string) (string, error) {
+//					example.NameServers.ApplyT(func(nameServers []string) (string, error) {
 //						return nameServers[0], nil
 //					}).(pulumi.StringOutput),
-//					exampleZone.NameServers.ApplyT(func(nameServers []string) (string, error) {
+//					example.NameServers.ApplyT(func(nameServers []string) (string, error) {
 //						return nameServers[1], nil
 //					}).(pulumi.StringOutput),
-//					exampleZone.NameServers.ApplyT(func(nameServers []string) (string, error) {
+//					example.NameServers.ApplyT(func(nameServers []string) (string, error) {
 //						return nameServers[2], nil
 //					}).(pulumi.StringOutput),
-//					exampleZone.NameServers.ApplyT(func(nameServers []string) (string, error) {
+//					example.NameServers.ApplyT(func(nameServers []string) (string, error) {
 //						return nameServers[3], nil
 //					}).(pulumi.StringOutput),
 //				},
@@ -251,6 +294,8 @@ type Record struct {
 	Fqdn pulumi.StringOutput `pulumi:"fqdn"`
 	// A block indicating a routing policy based on the geolocation of the requestor. Conflicts with any other routing policy. Documented below.
 	GeolocationRoutingPolicies RecordGeolocationRoutingPolicyArrayOutput `pulumi:"geolocationRoutingPolicies"`
+	// A block indicating a routing policy based on the geoproximity of the requestor. Conflicts with any other routing policy. Documented below.
+	GeoproximityRoutingPolicy RecordGeoproximityRoutingPolicyPtrOutput `pulumi:"geoproximityRoutingPolicy"`
 	// The health check the record should be associated with.
 	HealthCheckId pulumi.StringPtrOutput `pulumi:"healthCheckId"`
 	// A block indicating a routing policy based on the latency between the requestor and an AWS region. Conflicts with any other routing policy. Documented below.
@@ -261,7 +306,7 @@ type Record struct {
 	Name pulumi.StringOutput `pulumi:"name"`
 	// A string list of records. To specify a single record value longer than 255 characters such as a TXT record for DKIM, add `\"\"` inside the provider configuration string (e.g., `"first255characters\"\"morecharacters"`).
 	Records pulumi.StringArrayOutput `pulumi:"records"`
-	// Unique identifier to differentiate records with routing policies from one another. Required if using `cidrRoutingPolicy`, `failoverRoutingPolicy`, `geolocationRoutingPolicy`, `latencyRoutingPolicy`, `multivalueAnswerRoutingPolicy`, or `weightedRoutingPolicy`.
+	// Unique identifier to differentiate records with routing policies from one another. Required if using `cidrRoutingPolicy`, `failoverRoutingPolicy`, `geolocationRoutingPolicy`,`geoproximityRoutingPolicy`, `latencyRoutingPolicy`, `multivalueAnswerRoutingPolicy`, or `weightedRoutingPolicy`.
 	SetIdentifier pulumi.StringPtrOutput `pulumi:"setIdentifier"`
 	// The TTL of the record.
 	Ttl pulumi.IntPtrOutput `pulumi:"ttl"`
@@ -327,6 +372,8 @@ type recordState struct {
 	Fqdn *string `pulumi:"fqdn"`
 	// A block indicating a routing policy based on the geolocation of the requestor. Conflicts with any other routing policy. Documented below.
 	GeolocationRoutingPolicies []RecordGeolocationRoutingPolicy `pulumi:"geolocationRoutingPolicies"`
+	// A block indicating a routing policy based on the geoproximity of the requestor. Conflicts with any other routing policy. Documented below.
+	GeoproximityRoutingPolicy *RecordGeoproximityRoutingPolicy `pulumi:"geoproximityRoutingPolicy"`
 	// The health check the record should be associated with.
 	HealthCheckId *string `pulumi:"healthCheckId"`
 	// A block indicating a routing policy based on the latency between the requestor and an AWS region. Conflicts with any other routing policy. Documented below.
@@ -337,7 +384,7 @@ type recordState struct {
 	Name *string `pulumi:"name"`
 	// A string list of records. To specify a single record value longer than 255 characters such as a TXT record for DKIM, add `\"\"` inside the provider configuration string (e.g., `"first255characters\"\"morecharacters"`).
 	Records []string `pulumi:"records"`
-	// Unique identifier to differentiate records with routing policies from one another. Required if using `cidrRoutingPolicy`, `failoverRoutingPolicy`, `geolocationRoutingPolicy`, `latencyRoutingPolicy`, `multivalueAnswerRoutingPolicy`, or `weightedRoutingPolicy`.
+	// Unique identifier to differentiate records with routing policies from one another. Required if using `cidrRoutingPolicy`, `failoverRoutingPolicy`, `geolocationRoutingPolicy`,`geoproximityRoutingPolicy`, `latencyRoutingPolicy`, `multivalueAnswerRoutingPolicy`, or `weightedRoutingPolicy`.
 	SetIdentifier *string `pulumi:"setIdentifier"`
 	// The TTL of the record.
 	Ttl *int `pulumi:"ttl"`
@@ -365,6 +412,8 @@ type RecordState struct {
 	Fqdn pulumi.StringPtrInput
 	// A block indicating a routing policy based on the geolocation of the requestor. Conflicts with any other routing policy. Documented below.
 	GeolocationRoutingPolicies RecordGeolocationRoutingPolicyArrayInput
+	// A block indicating a routing policy based on the geoproximity of the requestor. Conflicts with any other routing policy. Documented below.
+	GeoproximityRoutingPolicy RecordGeoproximityRoutingPolicyPtrInput
 	// The health check the record should be associated with.
 	HealthCheckId pulumi.StringPtrInput
 	// A block indicating a routing policy based on the latency between the requestor and an AWS region. Conflicts with any other routing policy. Documented below.
@@ -375,7 +424,7 @@ type RecordState struct {
 	Name pulumi.StringPtrInput
 	// A string list of records. To specify a single record value longer than 255 characters such as a TXT record for DKIM, add `\"\"` inside the provider configuration string (e.g., `"first255characters\"\"morecharacters"`).
 	Records pulumi.StringArrayInput
-	// Unique identifier to differentiate records with routing policies from one another. Required if using `cidrRoutingPolicy`, `failoverRoutingPolicy`, `geolocationRoutingPolicy`, `latencyRoutingPolicy`, `multivalueAnswerRoutingPolicy`, or `weightedRoutingPolicy`.
+	// Unique identifier to differentiate records with routing policies from one another. Required if using `cidrRoutingPolicy`, `failoverRoutingPolicy`, `geolocationRoutingPolicy`,`geoproximityRoutingPolicy`, `latencyRoutingPolicy`, `multivalueAnswerRoutingPolicy`, or `weightedRoutingPolicy`.
 	SetIdentifier pulumi.StringPtrInput
 	// The TTL of the record.
 	Ttl pulumi.IntPtrInput
@@ -405,6 +454,8 @@ type recordArgs struct {
 	FailoverRoutingPolicies []RecordFailoverRoutingPolicy `pulumi:"failoverRoutingPolicies"`
 	// A block indicating a routing policy based on the geolocation of the requestor. Conflicts with any other routing policy. Documented below.
 	GeolocationRoutingPolicies []RecordGeolocationRoutingPolicy `pulumi:"geolocationRoutingPolicies"`
+	// A block indicating a routing policy based on the geoproximity of the requestor. Conflicts with any other routing policy. Documented below.
+	GeoproximityRoutingPolicy *RecordGeoproximityRoutingPolicy `pulumi:"geoproximityRoutingPolicy"`
 	// The health check the record should be associated with.
 	HealthCheckId *string `pulumi:"healthCheckId"`
 	// A block indicating a routing policy based on the latency between the requestor and an AWS region. Conflicts with any other routing policy. Documented below.
@@ -415,7 +466,7 @@ type recordArgs struct {
 	Name string `pulumi:"name"`
 	// A string list of records. To specify a single record value longer than 255 characters such as a TXT record for DKIM, add `\"\"` inside the provider configuration string (e.g., `"first255characters\"\"morecharacters"`).
 	Records []string `pulumi:"records"`
-	// Unique identifier to differentiate records with routing policies from one another. Required if using `cidrRoutingPolicy`, `failoverRoutingPolicy`, `geolocationRoutingPolicy`, `latencyRoutingPolicy`, `multivalueAnswerRoutingPolicy`, or `weightedRoutingPolicy`.
+	// Unique identifier to differentiate records with routing policies from one another. Required if using `cidrRoutingPolicy`, `failoverRoutingPolicy`, `geolocationRoutingPolicy`,`geoproximityRoutingPolicy`, `latencyRoutingPolicy`, `multivalueAnswerRoutingPolicy`, or `weightedRoutingPolicy`.
 	SetIdentifier *string `pulumi:"setIdentifier"`
 	// The TTL of the record.
 	Ttl *int `pulumi:"ttl"`
@@ -442,6 +493,8 @@ type RecordArgs struct {
 	FailoverRoutingPolicies RecordFailoverRoutingPolicyArrayInput
 	// A block indicating a routing policy based on the geolocation of the requestor. Conflicts with any other routing policy. Documented below.
 	GeolocationRoutingPolicies RecordGeolocationRoutingPolicyArrayInput
+	// A block indicating a routing policy based on the geoproximity of the requestor. Conflicts with any other routing policy. Documented below.
+	GeoproximityRoutingPolicy RecordGeoproximityRoutingPolicyPtrInput
 	// The health check the record should be associated with.
 	HealthCheckId pulumi.StringPtrInput
 	// A block indicating a routing policy based on the latency between the requestor and an AWS region. Conflicts with any other routing policy. Documented below.
@@ -452,7 +505,7 @@ type RecordArgs struct {
 	Name pulumi.StringInput
 	// A string list of records. To specify a single record value longer than 255 characters such as a TXT record for DKIM, add `\"\"` inside the provider configuration string (e.g., `"first255characters\"\"morecharacters"`).
 	Records pulumi.StringArrayInput
-	// Unique identifier to differentiate records with routing policies from one another. Required if using `cidrRoutingPolicy`, `failoverRoutingPolicy`, `geolocationRoutingPolicy`, `latencyRoutingPolicy`, `multivalueAnswerRoutingPolicy`, or `weightedRoutingPolicy`.
+	// Unique identifier to differentiate records with routing policies from one another. Required if using `cidrRoutingPolicy`, `failoverRoutingPolicy`, `geolocationRoutingPolicy`,`geoproximityRoutingPolicy`, `latencyRoutingPolicy`, `multivalueAnswerRoutingPolicy`, or `weightedRoutingPolicy`.
 	SetIdentifier pulumi.StringPtrInput
 	// The TTL of the record.
 	Ttl pulumi.IntPtrInput
@@ -584,6 +637,11 @@ func (o RecordOutput) GeolocationRoutingPolicies() RecordGeolocationRoutingPolic
 	return o.ApplyT(func(v *Record) RecordGeolocationRoutingPolicyArrayOutput { return v.GeolocationRoutingPolicies }).(RecordGeolocationRoutingPolicyArrayOutput)
 }
 
+// A block indicating a routing policy based on the geoproximity of the requestor. Conflicts with any other routing policy. Documented below.
+func (o RecordOutput) GeoproximityRoutingPolicy() RecordGeoproximityRoutingPolicyPtrOutput {
+	return o.ApplyT(func(v *Record) RecordGeoproximityRoutingPolicyPtrOutput { return v.GeoproximityRoutingPolicy }).(RecordGeoproximityRoutingPolicyPtrOutput)
+}
+
 // The health check the record should be associated with.
 func (o RecordOutput) HealthCheckId() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *Record) pulumi.StringPtrOutput { return v.HealthCheckId }).(pulumi.StringPtrOutput)
@@ -609,7 +667,7 @@ func (o RecordOutput) Records() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v *Record) pulumi.StringArrayOutput { return v.Records }).(pulumi.StringArrayOutput)
 }
 
-// Unique identifier to differentiate records with routing policies from one another. Required if using `cidrRoutingPolicy`, `failoverRoutingPolicy`, `geolocationRoutingPolicy`, `latencyRoutingPolicy`, `multivalueAnswerRoutingPolicy`, or `weightedRoutingPolicy`.
+// Unique identifier to differentiate records with routing policies from one another. Required if using `cidrRoutingPolicy`, `failoverRoutingPolicy`, `geolocationRoutingPolicy`,`geoproximityRoutingPolicy`, `latencyRoutingPolicy`, `multivalueAnswerRoutingPolicy`, or `weightedRoutingPolicy`.
 func (o RecordOutput) SetIdentifier() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *Record) pulumi.StringPtrOutput { return v.SetIdentifier }).(pulumi.StringPtrOutput)
 }

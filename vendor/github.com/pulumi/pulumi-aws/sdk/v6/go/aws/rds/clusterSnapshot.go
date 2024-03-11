@@ -29,7 +29,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := rds.NewClusterSnapshot(ctx, "example", &rds.ClusterSnapshotArgs{
-//				DbClusterIdentifier:         pulumi.Any(aws_rds_cluster.Example.Id),
+//				DbClusterIdentifier:         pulumi.Any(exampleAwsRdsCluster.Id),
 //				DbClusterSnapshotIdentifier: pulumi.String("resourcetestsnapshot1234"),
 //			})
 //			if err != nil {
@@ -102,10 +102,6 @@ func NewClusterSnapshot(ctx *pulumi.Context,
 	if args.DbClusterSnapshotIdentifier == nil {
 		return nil, errors.New("invalid value for required argument 'DbClusterSnapshotIdentifier'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource ClusterSnapshot
 	err := ctx.RegisterResource("aws:rds/clusterSnapshot:ClusterSnapshot", name, args, &resource, opts...)

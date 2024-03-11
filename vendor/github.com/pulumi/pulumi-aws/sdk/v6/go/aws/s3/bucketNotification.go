@@ -35,11 +35,13 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			bucket, err := s3.NewBucketV2(ctx, "bucket", nil)
+//			bucket, err := s3.NewBucketV2(ctx, "bucket", &s3.BucketV2Args{
+//				Bucket: pulumi.String("your-bucket-name"),
+//			})
 //			if err != nil {
 //				return err
 //			}
-//			topicPolicyDocument := iam.GetPolicyDocumentOutput(ctx, iam.GetPolicyDocumentOutputArgs{
+//			topic := iam.GetPolicyDocumentOutput(ctx, iam.GetPolicyDocumentOutputArgs{
 //				Statements: iam.GetPolicyDocumentStatementArray{
 //					&iam.GetPolicyDocumentStatementArgs{
 //						Effect: pulumi.String("Allow"),
@@ -69,15 +71,16 @@ import (
 //					},
 //				},
 //			}, nil)
-//			topicTopic, err := sns.NewTopic(ctx, "topicTopic", &sns.TopicArgs{
-//				Policy: topicPolicyDocument.ApplyT(func(topicPolicyDocument iam.GetPolicyDocumentResult) (*string, error) {
-//					return &topicPolicyDocument.Json, nil
+//			topicTopic, err := sns.NewTopic(ctx, "topic", &sns.TopicArgs{
+//				Name: pulumi.String("s3-event-notification-topic"),
+//				Policy: topic.ApplyT(func(topic iam.GetPolicyDocumentResult) (*string, error) {
+//					return &topic.Json, nil
 //				}).(pulumi.StringPtrOutput),
 //			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = s3.NewBucketNotification(ctx, "bucketNotification", &s3.BucketNotificationArgs{
+//			_, err = s3.NewBucketNotification(ctx, "bucket_notification", &s3.BucketNotificationArgs{
 //				Bucket: bucket.ID(),
 //				Topics: s3.BucketNotificationTopicArray{
 //					&s3.BucketNotificationTopicArgs{
@@ -113,11 +116,13 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			bucket, err := s3.NewBucketV2(ctx, "bucket", nil)
+//			bucket, err := s3.NewBucketV2(ctx, "bucket", &s3.BucketV2Args{
+//				Bucket: pulumi.String("your-bucket-name"),
+//			})
 //			if err != nil {
 //				return err
 //			}
-//			queuePolicyDocument := iam.GetPolicyDocumentOutput(ctx, iam.GetPolicyDocumentOutputArgs{
+//			queue := iam.GetPolicyDocumentOutput(ctx, iam.GetPolicyDocumentOutputArgs{
 //				Statements: iam.GetPolicyDocumentStatementArray{
 //					&iam.GetPolicyDocumentStatementArgs{
 //						Effect: pulumi.String("Allow"),
@@ -147,15 +152,16 @@ import (
 //					},
 //				},
 //			}, nil)
-//			queueQueue, err := sqs.NewQueue(ctx, "queueQueue", &sqs.QueueArgs{
-//				Policy: queuePolicyDocument.ApplyT(func(queuePolicyDocument iam.GetPolicyDocumentResult) (*string, error) {
-//					return &queuePolicyDocument.Json, nil
+//			queueQueue, err := sqs.NewQueue(ctx, "queue", &sqs.QueueArgs{
+//				Name: pulumi.String("s3-event-notification-queue"),
+//				Policy: queue.ApplyT(func(queue iam.GetPolicyDocumentResult) (*string, error) {
+//					return &queue.Json, nil
 //				}).(pulumi.StringPtrOutput),
 //			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = s3.NewBucketNotification(ctx, "bucketNotification", &s3.BucketNotificationArgs{
+//			_, err = s3.NewBucketNotification(ctx, "bucket_notification", &s3.BucketNotificationArgs{
 //				Bucket: bucket.ID(),
 //				Queues: s3.BucketNotificationQueueArray{
 //					&s3.BucketNotificationQueueArgs{
@@ -212,7 +218,8 @@ import (
 //			if err != nil {
 //				return err
 //			}
-//			iamForLambda, err := iam.NewRole(ctx, "iamForLambda", &iam.RoleArgs{
+//			iamForLambda, err := iam.NewRole(ctx, "iam_for_lambda", &iam.RoleArgs{
+//				Name:             pulumi.String("iam_for_lambda"),
 //				AssumeRolePolicy: *pulumi.String(assumeRole.Json),
 //			})
 //			if err != nil {
@@ -220,6 +227,7 @@ import (
 //			}
 //			_, err = lambda.NewFunction(ctx, "func", &lambda.FunctionArgs{
 //				Code:    pulumi.NewFileArchive("your-function.zip"),
+//				Name:    pulumi.String("example_lambda_name"),
 //				Role:    iamForLambda.Arn,
 //				Handler: pulumi.String("exports.example"),
 //				Runtime: pulumi.String("go1.x"),
@@ -227,20 +235,23 @@ import (
 //			if err != nil {
 //				return err
 //			}
-//			bucket, err := s3.NewBucketV2(ctx, "bucket", nil)
-//			if err != nil {
-//				return err
-//			}
-//			allowBucket, err := lambda.NewPermission(ctx, "allowBucket", &lambda.PermissionArgs{
-//				Action:    pulumi.String("lambda:InvokeFunction"),
-//				Function:  _func.Arn,
-//				Principal: pulumi.String("s3.amazonaws.com"),
-//				SourceArn: bucket.Arn,
+//			bucket, err := s3.NewBucketV2(ctx, "bucket", &s3.BucketV2Args{
+//				Bucket: pulumi.String("your-bucket-name"),
 //			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = s3.NewBucketNotification(ctx, "bucketNotification", &s3.BucketNotificationArgs{
+//			_, err = lambda.NewPermission(ctx, "allow_bucket", &lambda.PermissionArgs{
+//				StatementId: pulumi.String("AllowExecutionFromS3Bucket"),
+//				Action:      pulumi.String("lambda:InvokeFunction"),
+//				Function:    _func.Arn,
+//				Principal:   pulumi.String("s3.amazonaws.com"),
+//				SourceArn:   bucket.Arn,
+//			})
+//			if err != nil {
+//				return err
+//			}
+//			_, err = s3.NewBucketNotification(ctx, "bucket_notification", &s3.BucketNotificationArgs{
 //				Bucket: bucket.ID(),
 //				LambdaFunctions: s3.BucketNotificationLambdaFunctionArray{
 //					&s3.BucketNotificationLambdaFunctionArgs{
@@ -252,9 +263,7 @@ import (
 //						FilterSuffix: pulumi.String(".log"),
 //					},
 //				},
-//			}, pulumi.DependsOn([]pulumi.Resource{
-//				allowBucket,
-//			}))
+//			})
 //			if err != nil {
 //				return err
 //			}
@@ -263,7 +272,7 @@ import (
 //	}
 //
 // ```
-// ### Add multiple notification configurations to SQS Queue
+// ### Trigger multiple Lambda functions
 //
 // ```go
 // package main
@@ -271,99 +280,111 @@ import (
 // import (
 //
 //	"github.com/pulumi/pulumi-aws/sdk/v6/go/aws/iam"
+//	"github.com/pulumi/pulumi-aws/sdk/v6/go/aws/lambda"
 //	"github.com/pulumi/pulumi-aws/sdk/v6/go/aws/s3"
-//	"github.com/pulumi/pulumi-aws/sdk/v6/go/aws/sqs"
 //	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 //
 // )
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			bucket, err := s3.NewBucketV2(ctx, "bucket", nil)
-//			if err != nil {
-//				return err
-//			}
-//			queuePolicyDocument := iam.GetPolicyDocumentOutput(ctx, iam.GetPolicyDocumentOutputArgs{
-//				Statements: iam.GetPolicyDocumentStatementArray{
-//					&iam.GetPolicyDocumentStatementArgs{
-//						Effect: pulumi.String("Allow"),
-//						Principals: iam.GetPolicyDocumentStatementPrincipalArray{
-//							&iam.GetPolicyDocumentStatementPrincipalArgs{
-//								Type: pulumi.String("*"),
-//								Identifiers: pulumi.StringArray{
-//									pulumi.String("*"),
+//			assumeRole, err := iam.GetPolicyDocument(ctx, &iam.GetPolicyDocumentArgs{
+//				Statements: []iam.GetPolicyDocumentStatement{
+//					{
+//						Effect: pulumi.StringRef("Allow"),
+//						Principals: []iam.GetPolicyDocumentStatementPrincipal{
+//							{
+//								Type: "Service",
+//								Identifiers: []string{
+//									"lambda.amazonaws.com",
 //								},
 //							},
 //						},
-//						Actions: pulumi.StringArray{
-//							pulumi.String("sqs:SendMessage"),
-//						},
-//						Resources: pulumi.StringArray{
-//							pulumi.String("arn:aws:sqs:*:*:s3-event-notification-queue"),
-//						},
-//						Conditions: iam.GetPolicyDocumentStatementConditionArray{
-//							&iam.GetPolicyDocumentStatementConditionArgs{
-//								Test:     pulumi.String("ArnEquals"),
-//								Variable: pulumi.String("aws:SourceArn"),
-//								Values: pulumi.StringArray{
-//									bucket.Arn,
-//								},
-//							},
+//						Actions: []string{
+//							"sts:AssumeRole",
 //						},
 //					},
 //				},
 //			}, nil)
-//			queueQueue, err := sqs.NewQueue(ctx, "queueQueue", &sqs.QueueArgs{
-//				Policy: queuePolicyDocument.ApplyT(func(queuePolicyDocument iam.GetPolicyDocumentResult) (*string, error) {
-//					return &queuePolicyDocument.Json, nil
-//				}).(pulumi.StringPtrOutput),
+//			if err != nil {
+//				return err
+//			}
+//			iamForLambda, err := iam.NewRole(ctx, "iam_for_lambda", &iam.RoleArgs{
+//				Name:             pulumi.String("iam_for_lambda"),
+//				AssumeRolePolicy: *pulumi.String(assumeRole.Json),
 //			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = s3.NewBucketNotification(ctx, "bucketNotification", &s3.BucketNotificationArgs{
+//			func1, err := lambda.NewFunction(ctx, "func1", &lambda.FunctionArgs{
+//				Code:    pulumi.NewFileArchive("your-function1.zip"),
+//				Name:    pulumi.String("example_lambda_name1"),
+//				Role:    iamForLambda.Arn,
+//				Handler: pulumi.String("exports.example"),
+//				Runtime: pulumi.String("go1.x"),
+//			})
+//			if err != nil {
+//				return err
+//			}
+//			bucket, err := s3.NewBucketV2(ctx, "bucket", &s3.BucketV2Args{
+//				Bucket: pulumi.String("your-bucket-name"),
+//			})
+//			if err != nil {
+//				return err
+//			}
+//			_, err = lambda.NewPermission(ctx, "allow_bucket1", &lambda.PermissionArgs{
+//				StatementId: pulumi.String("AllowExecutionFromS3Bucket1"),
+//				Action:      pulumi.String("lambda:InvokeFunction"),
+//				Function:    func1.Arn,
+//				Principal:   pulumi.String("s3.amazonaws.com"),
+//				SourceArn:   bucket.Arn,
+//			})
+//			if err != nil {
+//				return err
+//			}
+//			func2, err := lambda.NewFunction(ctx, "func2", &lambda.FunctionArgs{
+//				Code:    pulumi.NewFileArchive("your-function2.zip"),
+//				Name:    pulumi.String("example_lambda_name2"),
+//				Role:    iamForLambda.Arn,
+//				Handler: pulumi.String("exports.example"),
+//			})
+//			if err != nil {
+//				return err
+//			}
+//			_, err = lambda.NewPermission(ctx, "allow_bucket2", &lambda.PermissionArgs{
+//				StatementId: pulumi.String("AllowExecutionFromS3Bucket2"),
+//				Action:      pulumi.String("lambda:InvokeFunction"),
+//				Function:    func2.Arn,
+//				Principal:   pulumi.String("s3.amazonaws.com"),
+//				SourceArn:   bucket.Arn,
+//			})
+//			if err != nil {
+//				return err
+//			}
+//			_, err = s3.NewBucketNotification(ctx, "bucket_notification", &s3.BucketNotificationArgs{
 //				Bucket: bucket.ID(),
-//				Queues: s3.BucketNotificationQueueArray{
-//					&s3.BucketNotificationQueueArgs{
-//						Id:       pulumi.String("image-upload-event"),
-//						QueueArn: queueQueue.Arn,
+//				LambdaFunctions: s3.BucketNotificationLambdaFunctionArray{
+//					&s3.BucketNotificationLambdaFunctionArgs{
+//						LambdaFunctionArn: func1.Arn,
 //						Events: pulumi.StringArray{
 //							pulumi.String("s3:ObjectCreated:*"),
 //						},
-//						FilterPrefix: pulumi.String("images/"),
+//						FilterPrefix: pulumi.String("AWSLogs/"),
+//						FilterSuffix: pulumi.String(".log"),
 //					},
-//					&s3.BucketNotificationQueueArgs{
-//						Id:       pulumi.String("video-upload-event"),
-//						QueueArn: queueQueue.Arn,
+//					&s3.BucketNotificationLambdaFunctionArgs{
+//						LambdaFunctionArn: func2.Arn,
 //						Events: pulumi.StringArray{
 //							pulumi.String("s3:ObjectCreated:*"),
 //						},
-//						FilterPrefix: pulumi.String("videos/"),
+//						FilterPrefix: pulumi.String("OtherLogs/"),
+//						FilterSuffix: pulumi.String(".log"),
 //					},
 //				},
 //			})
 //			if err != nil {
 //				return err
 //			}
-//			return nil
-//		})
-//	}
-//
-// ```
-//
-// For JSON syntax, use an array instead of defining the `queue` key twice.
-//
-// ```go
-// package main
-//
-// import (
-//
-//	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
-//
-// )
-//
-//	func main() {
-//		pulumi.Run(func(ctx *pulumi.Context) error {
 //			return nil
 //		})
 //	}
@@ -383,11 +404,13 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			bucket, err := s3.NewBucketV2(ctx, "bucket", nil)
+//			bucket, err := s3.NewBucketV2(ctx, "bucket", &s3.BucketV2Args{
+//				Bucket: pulumi.String("your-bucket-name"),
+//			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = s3.NewBucketNotification(ctx, "bucketNotification", &s3.BucketNotificationArgs{
+//			_, err = s3.NewBucketNotification(ctx, "bucket_notification", &s3.BucketNotificationArgs{
 //				Bucket:      bucket.ID(),
 //				Eventbridge: pulumi.Bool(true),
 //			})

@@ -30,6 +30,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := ec2.NewPlacementGroup(ctx, "web", &ec2.PlacementGroupArgs{
+//				Name:     pulumi.String("hunky-dory-pg"),
 //				Strategy: pulumi.String("cluster"),
 //			})
 //			if err != nil {
@@ -86,10 +87,6 @@ func NewPlacementGroup(ctx *pulumi.Context,
 	if args.Strategy == nil {
 		return nil, errors.New("invalid value for required argument 'Strategy'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource PlacementGroup
 	err := ctx.RegisterResource("aws:ec2/placementGroup:PlacementGroup", name, args, &resource, opts...)

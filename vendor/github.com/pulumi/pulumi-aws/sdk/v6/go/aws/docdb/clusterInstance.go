@@ -54,7 +54,7 @@ import (
 //			for index := 0; index < 2; index++ {
 //				key0 := index
 //				val0 := index
-//				__res, err := docdb.NewClusterInstance(ctx, fmt.Sprintf("clusterInstances-%v", key0), &docdb.ClusterInstanceArgs{
+//				__res, err := docdb.NewClusterInstance(ctx, fmt.Sprintf("cluster_instances-%v", key0), &docdb.ClusterInstanceArgs{
 //					Identifier:        pulumi.String(fmt.Sprintf("docdb-cluster-demo-%v", val0)),
 //					ClusterIdentifier: _default.ID(),
 //					InstanceClass:     pulumi.String("db.r5.large"),
@@ -177,10 +177,6 @@ func NewClusterInstance(ctx *pulumi.Context,
 	if args.InstanceClass == nil {
 		return nil, errors.New("invalid value for required argument 'InstanceClass'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource ClusterInstance
 	err := ctx.RegisterResource("aws:docdb/clusterInstance:ClusterInstance", name, args, &resource, opts...)

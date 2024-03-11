@@ -33,8 +33,8 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := ec2.NewVpcIpamResourceDiscoveryAssociation(ctx, "test", &ec2.VpcIpamResourceDiscoveryAssociationArgs{
-//				IpamId:                  pulumi.Any(aws_vpc_ipam.Test.Id),
-//				IpamResourceDiscoveryId: pulumi.Any(aws_vpc_ipam_resource_discovery.Test.Id),
+//				IpamId:                  pulumi.Any(testAwsVpcIpam.Id),
+//				IpamResourceDiscoveryId: pulumi.Any(testAwsVpcIpamResourceDiscovery.Id),
 //				Tags: pulumi.StringMap{
 //					"Name": pulumi.String("test"),
 //				},
@@ -97,10 +97,6 @@ func NewVpcIpamResourceDiscoveryAssociation(ctx *pulumi.Context,
 	if args.IpamResourceDiscoveryId == nil {
 		return nil, errors.New("invalid value for required argument 'IpamResourceDiscoveryId'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource VpcIpamResourceDiscoveryAssociation
 	err := ctx.RegisterResource("aws:ec2/vpcIpamResourceDiscoveryAssociation:VpcIpamResourceDiscoveryAssociation", name, args, &resource, opts...)

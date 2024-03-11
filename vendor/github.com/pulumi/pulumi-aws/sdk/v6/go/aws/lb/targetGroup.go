@@ -38,6 +38,7 @@ import (
 //				return err
 //			}
 //			_, err = lb.NewTargetGroup(ctx, "test", &lb.TargetGroupArgs{
+//				Name:     pulumi.String("tf-example-lb-tg"),
 //				Port:     pulumi.Int(80),
 //				Protocol: pulumi.String("HTTP"),
 //				VpcId:    main.ID(),
@@ -72,6 +73,7 @@ import (
 //				return err
 //			}
 //			_, err = lb.NewTargetGroup(ctx, "ip-example", &lb.TargetGroupArgs{
+//				Name:       pulumi.String("tf-example-lb-tg"),
 //				Port:       pulumi.Int(80),
 //				Protocol:   pulumi.String("HTTP"),
 //				TargetType: pulumi.String("ip"),
@@ -100,6 +102,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := lb.NewTargetGroup(ctx, "lambda-example", &lb.TargetGroupArgs{
+//				Name:       pulumi.String("tf-example-lb-tg"),
 //				TargetType: pulumi.String("lambda"),
 //			})
 //			if err != nil {
@@ -125,10 +128,11 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := lb.NewTargetGroup(ctx, "alb-example", &lb.TargetGroupArgs{
+//				Name:       pulumi.String("tf-example-lb-alb-tg"),
 //				TargetType: pulumi.String("alb"),
 //				Port:       pulumi.Int(80),
 //				Protocol:   pulumi.String("TCP"),
-//				VpcId:      pulumi.Any(aws_vpc.Main.Id),
+//				VpcId:      pulumi.Any(main.Id),
 //			})
 //			if err != nil {
 //				return err
@@ -153,9 +157,10 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := lb.NewTargetGroup(ctx, "tcp-example", &lb.TargetGroupArgs{
+//				Name:     pulumi.String("tf-example-lb-nlb-tg"),
 //				Port:     pulumi.Int(25),
 //				Protocol: pulumi.String("TCP"),
-//				VpcId:    pulumi.Any(aws_vpc.Main.Id),
+//				VpcId:    pulumi.Any(main.Id),
 //				TargetHealthStates: lb.TargetGroupTargetHealthStateArray{
 //					&lb.TargetGroupTargetHealthStateArgs{
 //						EnableUnhealthyConnectionTermination: pulumi.Bool(false),
@@ -197,6 +202,8 @@ type TargetGroup struct {
 	IpAddressType pulumi.StringOutput `pulumi:"ipAddressType"`
 	// Whether the request and response headers exchanged between the load balancer and the Lambda function include arrays of values or strings. Only applies when `targetType` is `lambda`. Default is `false`.
 	LambdaMultiValueHeadersEnabled pulumi.BoolPtrOutput `pulumi:"lambdaMultiValueHeadersEnabled"`
+	// ARNs of the Load Balancers associated with the Target Group.
+	LoadBalancerArns pulumi.StringArrayOutput `pulumi:"loadBalancerArns"`
 	// Determines how the load balancer selects targets when routing requests. Only applicable for Application Load Balancer Target Groups. The value is `roundRobin`, `leastOutstandingRequests`, or `weightedRandom`. The default is `roundRobin`.
 	LoadBalancingAlgorithmType pulumi.StringOutput `pulumi:"loadBalancingAlgorithmType"`
 	// Determines whether to enable target anomaly mitigation.  Target anomaly mitigation is only supported by the `weightedRandom` load balancing algorithm type.  See [doc](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#automatic-target-weights) for more information.  The value is `"on"` or `"off"`. The default is `"off"`.
@@ -263,10 +270,6 @@ func NewTargetGroup(ctx *pulumi.Context,
 		},
 	})
 	opts = append(opts, aliases)
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource TargetGroup
 	err := ctx.RegisterResource("aws:lb/targetGroup:TargetGroup", name, args, &resource, opts...)
@@ -304,6 +307,8 @@ type targetGroupState struct {
 	IpAddressType *string `pulumi:"ipAddressType"`
 	// Whether the request and response headers exchanged between the load balancer and the Lambda function include arrays of values or strings. Only applies when `targetType` is `lambda`. Default is `false`.
 	LambdaMultiValueHeadersEnabled *bool `pulumi:"lambdaMultiValueHeadersEnabled"`
+	// ARNs of the Load Balancers associated with the Target Group.
+	LoadBalancerArns []string `pulumi:"loadBalancerArns"`
 	// Determines how the load balancer selects targets when routing requests. Only applicable for Application Load Balancer Target Groups. The value is `roundRobin`, `leastOutstandingRequests`, or `weightedRandom`. The default is `roundRobin`.
 	LoadBalancingAlgorithmType *string `pulumi:"loadBalancingAlgorithmType"`
 	// Determines whether to enable target anomaly mitigation.  Target anomaly mitigation is only supported by the `weightedRandom` load balancing algorithm type.  See [doc](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#automatic-target-weights) for more information.  The value is `"on"` or `"off"`. The default is `"off"`.
@@ -372,6 +377,8 @@ type TargetGroupState struct {
 	IpAddressType pulumi.StringPtrInput
 	// Whether the request and response headers exchanged between the load balancer and the Lambda function include arrays of values or strings. Only applies when `targetType` is `lambda`. Default is `false`.
 	LambdaMultiValueHeadersEnabled pulumi.BoolPtrInput
+	// ARNs of the Load Balancers associated with the Target Group.
+	LoadBalancerArns pulumi.StringArrayInput
 	// Determines how the load balancer selects targets when routing requests. Only applicable for Application Load Balancer Target Groups. The value is `roundRobin`, `leastOutstandingRequests`, or `weightedRandom`. The default is `roundRobin`.
 	LoadBalancingAlgorithmType pulumi.StringPtrInput
 	// Determines whether to enable target anomaly mitigation.  Target anomaly mitigation is only supported by the `weightedRandom` load balancing algorithm type.  See [doc](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#automatic-target-weights) for more information.  The value is `"on"` or `"off"`. The default is `"off"`.
@@ -670,6 +677,11 @@ func (o TargetGroupOutput) IpAddressType() pulumi.StringOutput {
 // Whether the request and response headers exchanged between the load balancer and the Lambda function include arrays of values or strings. Only applies when `targetType` is `lambda`. Default is `false`.
 func (o TargetGroupOutput) LambdaMultiValueHeadersEnabled() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v *TargetGroup) pulumi.BoolPtrOutput { return v.LambdaMultiValueHeadersEnabled }).(pulumi.BoolPtrOutput)
+}
+
+// ARNs of the Load Balancers associated with the Target Group.
+func (o TargetGroupOutput) LoadBalancerArns() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *TargetGroup) pulumi.StringArrayOutput { return v.LoadBalancerArns }).(pulumi.StringArrayOutput)
 }
 
 // Determines how the load balancer selects targets when routing requests. Only applicable for Application Load Balancer Target Groups. The value is `roundRobin`, `leastOutstandingRequests`, or `weightedRandom`. The default is `roundRobin`.

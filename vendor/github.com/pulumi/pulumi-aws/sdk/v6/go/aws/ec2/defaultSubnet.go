@@ -35,7 +35,7 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			_, err := ec2.NewDefaultSubnet(ctx, "defaultAz1", &ec2.DefaultSubnetArgs{
+//			_, err := ec2.NewDefaultSubnet(ctx, "default_az1", &ec2.DefaultSubnetArgs{
 //				AvailabilityZone: pulumi.String("us-west-2a"),
 //				Tags: pulumi.StringMap{
 //					"Name": pulumi.String("Default subnet for us-west-2a"),
@@ -107,10 +107,6 @@ func NewDefaultSubnet(ctx *pulumi.Context,
 	if args.AvailabilityZone == nil {
 		return nil, errors.New("invalid value for required argument 'AvailabilityZone'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource DefaultSubnet
 	err := ctx.RegisterResource("aws:ec2/defaultSubnet:DefaultSubnet", name, args, &resource, opts...)

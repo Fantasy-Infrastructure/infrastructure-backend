@@ -28,7 +28,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := ec2.NewInternetGateway(ctx, "gw", &ec2.InternetGatewayArgs{
-//				VpcId: pulumi.Any(aws_vpc.Main.Id),
+//				VpcId: pulumi.Any(main.Id),
 //				Tags: pulumi.StringMap{
 //					"Name": pulumi.String("main"),
 //				},
@@ -72,15 +72,13 @@ type InternetGateway struct {
 	//
 	// func main() {
 	// 	pulumi.Run(func(ctx *pulumi.Context) error {
-	// 		gw, err := ec2.NewInternetGateway(ctx, "gw", &ec2.InternetGatewayArgs{
-	// 			VpcId: pulumi.Any(aws_vpc.Main.Id),
+	// 		_, err := ec2.NewInternetGateway(ctx, "gw", &ec2.InternetGatewayArgs{
+	// 			VpcId: pulumi.Any(main.Id),
 	// 		})
 	// 		if err != nil {
 	// 			return err
 	// 		}
-	// 		_, err = ec2.NewInstance(ctx, "foo", nil, pulumi.DependsOn([]pulumi.Resource{
-	// 			gw,
-	// 		}))
+	// 		_, err = ec2.NewInstance(ctx, "foo", nil)
 	// 		if err != nil {
 	// 			return err
 	// 		}
@@ -104,10 +102,6 @@ func NewInternetGateway(ctx *pulumi.Context,
 		args = &InternetGatewayArgs{}
 	}
 
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource InternetGateway
 	err := ctx.RegisterResource("aws:ec2/internetGateway:InternetGateway", name, args, &resource, opts...)
@@ -149,15 +143,13 @@ type internetGatewayState struct {
 	//
 	// func main() {
 	// 	pulumi.Run(func(ctx *pulumi.Context) error {
-	// 		gw, err := ec2.NewInternetGateway(ctx, "gw", &ec2.InternetGatewayArgs{
-	// 			VpcId: pulumi.Any(aws_vpc.Main.Id),
+	// 		_, err := ec2.NewInternetGateway(ctx, "gw", &ec2.InternetGatewayArgs{
+	// 			VpcId: pulumi.Any(main.Id),
 	// 		})
 	// 		if err != nil {
 	// 			return err
 	// 		}
-	// 		_, err = ec2.NewInstance(ctx, "foo", nil, pulumi.DependsOn([]pulumi.Resource{
-	// 			gw,
-	// 		}))
+	// 		_, err = ec2.NewInstance(ctx, "foo", nil)
 	// 		if err != nil {
 	// 			return err
 	// 		}
@@ -193,15 +185,13 @@ type InternetGatewayState struct {
 	//
 	// func main() {
 	// 	pulumi.Run(func(ctx *pulumi.Context) error {
-	// 		gw, err := ec2.NewInternetGateway(ctx, "gw", &ec2.InternetGatewayArgs{
-	// 			VpcId: pulumi.Any(aws_vpc.Main.Id),
+	// 		_, err := ec2.NewInternetGateway(ctx, "gw", &ec2.InternetGatewayArgs{
+	// 			VpcId: pulumi.Any(main.Id),
 	// 		})
 	// 		if err != nil {
 	// 			return err
 	// 		}
-	// 		_, err = ec2.NewInstance(ctx, "foo", nil, pulumi.DependsOn([]pulumi.Resource{
-	// 			gw,
-	// 		}))
+	// 		_, err = ec2.NewInstance(ctx, "foo", nil)
 	// 		if err != nil {
 	// 			return err
 	// 		}
@@ -237,15 +227,13 @@ type internetGatewayArgs struct {
 	//
 	// func main() {
 	// 	pulumi.Run(func(ctx *pulumi.Context) error {
-	// 		gw, err := ec2.NewInternetGateway(ctx, "gw", &ec2.InternetGatewayArgs{
-	// 			VpcId: pulumi.Any(aws_vpc.Main.Id),
+	// 		_, err := ec2.NewInternetGateway(ctx, "gw", &ec2.InternetGatewayArgs{
+	// 			VpcId: pulumi.Any(main.Id),
 	// 		})
 	// 		if err != nil {
 	// 			return err
 	// 		}
-	// 		_, err = ec2.NewInstance(ctx, "foo", nil, pulumi.DependsOn([]pulumi.Resource{
-	// 			gw,
-	// 		}))
+	// 		_, err = ec2.NewInstance(ctx, "foo", nil)
 	// 		if err != nil {
 	// 			return err
 	// 		}
@@ -274,15 +262,13 @@ type InternetGatewayArgs struct {
 	//
 	// func main() {
 	// 	pulumi.Run(func(ctx *pulumi.Context) error {
-	// 		gw, err := ec2.NewInternetGateway(ctx, "gw", &ec2.InternetGatewayArgs{
-	// 			VpcId: pulumi.Any(aws_vpc.Main.Id),
+	// 		_, err := ec2.NewInternetGateway(ctx, "gw", &ec2.InternetGatewayArgs{
+	// 			VpcId: pulumi.Any(main.Id),
 	// 		})
 	// 		if err != nil {
 	// 			return err
 	// 		}
-	// 		_, err = ec2.NewInstance(ctx, "foo", nil, pulumi.DependsOn([]pulumi.Resource{
-	// 			gw,
-	// 		}))
+	// 		_, err = ec2.NewInstance(ctx, "foo", nil)
 	// 		if err != nil {
 	// 			return err
 	// 		}
@@ -408,15 +394,13 @@ func (o InternetGatewayOutput) OwnerId() pulumi.StringOutput {
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			gw, err := ec2.NewInternetGateway(ctx, "gw", &ec2.InternetGatewayArgs{
-//				VpcId: pulumi.Any(aws_vpc.Main.Id),
+//			_, err := ec2.NewInternetGateway(ctx, "gw", &ec2.InternetGatewayArgs{
+//				VpcId: pulumi.Any(main.Id),
 //			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = ec2.NewInstance(ctx, "foo", nil, pulumi.DependsOn([]pulumi.Resource{
-//				gw,
-//			}))
+//			_, err = ec2.NewInstance(ctx, "foo", nil)
 //			if err != nil {
 //				return err
 //			}

@@ -29,10 +29,10 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := ec2.NewCapacityReservation(ctx, "default", &ec2.CapacityReservationArgs{
+//				InstanceType:     pulumi.String("t2.micro"),
+//				InstancePlatform: pulumi.String("Linux/UNIX"),
 //				AvailabilityZone: pulumi.String("eu-west-1a"),
 //				InstanceCount:    pulumi.Int(1),
-//				InstancePlatform: pulumi.String("Linux/UNIX"),
-//				InstanceType:     pulumi.String("t2.micro"),
 //			})
 //			if err != nil {
 //				return err
@@ -110,10 +110,6 @@ func NewCapacityReservation(ctx *pulumi.Context,
 	if args.InstanceType == nil {
 		return nil, errors.New("invalid value for required argument 'InstanceType'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource CapacityReservation
 	err := ctx.RegisterResource("aws:ec2/capacityReservation:CapacityReservation", name, args, &resource, opts...)

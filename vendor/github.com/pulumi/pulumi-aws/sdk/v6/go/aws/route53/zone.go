@@ -28,7 +28,9 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			_, err := route53.NewZone(ctx, "primary", nil)
+//			_, err := route53.NewZone(ctx, "primary", &route53.ZoneArgs{
+//				Name: pulumi.String("example.com"),
+//			})
 //			if err != nil {
 //				return err
 //			}
@@ -55,11 +57,14 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			main, err := route53.NewZone(ctx, "main", nil)
+//			main, err := route53.NewZone(ctx, "main", &route53.ZoneArgs{
+//				Name: pulumi.String("example.com"),
+//			})
 //			if err != nil {
 //				return err
 //			}
 //			dev, err := route53.NewZone(ctx, "dev", &route53.ZoneArgs{
+//				Name: pulumi.String("dev.example.com"),
 //				Tags: pulumi.StringMap{
 //					"Environment": pulumi.String("dev"),
 //				},
@@ -101,9 +106,10 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := route53.NewZone(ctx, "private", &route53.ZoneArgs{
+//				Name: pulumi.String("example.com"),
 //				Vpcs: route53.ZoneVpcArray{
 //					&route53.ZoneVpcArgs{
-//						VpcId: pulumi.Any(aws_vpc.Example.Id),
+//						VpcId: pulumi.Any(example.Id),
 //					},
 //				},
 //			})
@@ -165,10 +171,6 @@ func NewZone(ctx *pulumi.Context,
 	if args.Comment == nil {
 		args.Comment = pulumi.StringPtr("Managed by Pulumi")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource Zone
 	err := ctx.RegisterResource("aws:route53/zone:Zone", name, args, &resource, opts...)

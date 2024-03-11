@@ -29,16 +29,16 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := ec2.NewNetworkInterface(ctx, "test", &ec2.NetworkInterfaceArgs{
-//				SubnetId: pulumi.Any(aws_subnet.Public_a.Id),
+//				SubnetId: pulumi.Any(publicA.Id),
 //				PrivateIps: pulumi.StringArray{
 //					pulumi.String("10.0.0.50"),
 //				},
 //				SecurityGroups: pulumi.StringArray{
-//					aws_security_group.Web.Id,
+//					web.Id,
 //				},
 //				Attachments: ec2.NetworkInterfaceAttachmentTypeArray{
 //					&ec2.NetworkInterfaceAttachmentTypeArgs{
-//						Instance:    pulumi.Any(aws_instance.Test.Id),
+//						Instance:    pulumi.Any(testAwsInstance.Id),
 //						DeviceIndex: pulumi.Int(1),
 //					},
 //				},
@@ -146,10 +146,6 @@ func NewNetworkInterface(ctx *pulumi.Context,
 	if args.SubnetId == nil {
 		return nil, errors.New("invalid value for required argument 'SubnetId'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource NetworkInterface
 	err := ctx.RegisterResource("aws:ec2/networkInterface:NetworkInterface", name, args, &resource, opts...)

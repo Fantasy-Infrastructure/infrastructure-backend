@@ -21,25 +21,23 @@ import (
 //
 // import (
 //
-//	"os"
-//
 //	"github.com/pulumi/pulumi-aws/sdk/v6/go/aws/iam"
+//	"github.com/pulumi/pulumi-std/sdk/go/std"
 //	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 //
 // )
 //
-//	func readFileOrPanic(path string) pulumi.StringPtrInput {
-//		data, err := os.ReadFile(path)
-//		if err != nil {
-//			panic(err.Error())
-//		}
-//		return pulumi.String(string(data))
-//	}
-//
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			_, err := iam.NewSamlProvider(ctx, "default", &iam.SamlProviderArgs{
-//				SamlMetadataDocument: readFileOrPanic("saml-metadata.xml"),
+//			invokeFile, err := std.File(ctx, &std.FileArgs{
+//				Input: "saml-metadata.xml",
+//			}, nil)
+//			if err != nil {
+//				return err
+//			}
+//			_, err = iam.NewSamlProvider(ctx, "default", &iam.SamlProviderArgs{
+//				Name:                 pulumi.String("myprovider"),
+//				SamlMetadataDocument: invokeFile.Result,
 //			})
 //			if err != nil {
 //				return err
@@ -88,10 +86,6 @@ func NewSamlProvider(ctx *pulumi.Context,
 	if args.SamlMetadataDocument == nil {
 		return nil, errors.New("invalid value for required argument 'SamlMetadataDocument'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource SamlProvider
 	err := ctx.RegisterResource("aws:iam/samlProvider:SamlProvider", name, args, &resource, opts...)

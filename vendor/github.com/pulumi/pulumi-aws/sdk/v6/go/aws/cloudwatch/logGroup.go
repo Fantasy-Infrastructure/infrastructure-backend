@@ -28,9 +28,10 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := cloudwatch.NewLogGroup(ctx, "yada", &cloudwatch.LogGroupArgs{
+//				Name: pulumi.String("Yada"),
 //				Tags: pulumi.StringMap{
-//					"Application": pulumi.String("serviceA"),
 //					"Environment": pulumi.String("production"),
+//					"Application": pulumi.String("serviceA"),
 //				},
 //			})
 //			if err != nil {
@@ -87,10 +88,6 @@ func NewLogGroup(ctx *pulumi.Context,
 		args = &LogGroupArgs{}
 	}
 
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource LogGroup
 	err := ctx.RegisterResource("aws:cloudwatch/logGroup:LogGroup", name, args, &resource, opts...)

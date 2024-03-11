@@ -39,7 +39,7 @@ import (
 //			_, err := ec2.NewVpcEndpointService(ctx, "example", &ec2.VpcEndpointServiceArgs{
 //				AcceptanceRequired: pulumi.Bool(false),
 //				NetworkLoadBalancerArns: pulumi.StringArray{
-//					aws_lb.Example.Arn,
+//					exampleAwsLb.Arn,
 //				},
 //			})
 //			if err != nil {
@@ -67,7 +67,7 @@ import (
 //			_, err := ec2.NewVpcEndpointService(ctx, "example", &ec2.VpcEndpointServiceArgs{
 //				AcceptanceRequired: pulumi.Bool(false),
 //				GatewayLoadBalancerArns: pulumi.StringArray{
-//					aws_lb.Example.Arn,
+//					exampleAwsLb.Arn,
 //				},
 //			})
 //			if err != nil {
@@ -137,10 +137,6 @@ func NewVpcEndpointService(ctx *pulumi.Context,
 	if args.AcceptanceRequired == nil {
 		return nil, errors.New("invalid value for required argument 'AcceptanceRequired'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource VpcEndpointService
 	err := ctx.RegisterResource("aws:ec2/vpcEndpointService:VpcEndpointService", name, args, &resource, opts...)

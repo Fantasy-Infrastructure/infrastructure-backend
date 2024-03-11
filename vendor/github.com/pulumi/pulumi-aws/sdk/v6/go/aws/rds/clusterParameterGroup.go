@@ -32,8 +32,9 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := rds.NewClusterParameterGroup(ctx, "default", &rds.ClusterParameterGroupArgs{
-//				Description: pulumi.String("RDS default cluster parameter group"),
+//				Name:        pulumi.String("rds-cluster-pg"),
 //				Family:      pulumi.String("aurora5.6"),
+//				Description: pulumi.String("RDS default cluster parameter group"),
 //				Parameters: rds.ClusterParameterGroupParameterArray{
 //					&rds.ClusterParameterGroupParameterArgs{
 //						Name:  pulumi.String("character_set_server"),
@@ -99,10 +100,6 @@ func NewClusterParameterGroup(ctx *pulumi.Context,
 	if args.Description == nil {
 		args.Description = pulumi.StringPtr("Managed by Pulumi")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource ClusterParameterGroup
 	err := ctx.RegisterResource("aws:rds/clusterParameterGroup:ClusterParameterGroup", name, args, &resource, opts...)

@@ -105,7 +105,7 @@ import (
 //						Protocol:  pulumi.String("-1"),
 //						RuleNo:    pulumi.Int(100),
 //						Action:    pulumi.String("allow"),
-//						CidrBlock: pulumi.Any(aws_default_vpc.Mainvpc.Cidr_block),
+//						CidrBlock: pulumi.Any(mainvpcAwsDefaultVpc.CidrBlock),
 //						FromPort:  pulumi.Int(0),
 //						ToPort:    pulumi.Int(0),
 //					},
@@ -233,10 +233,6 @@ func NewDefaultNetworkAcl(ctx *pulumi.Context,
 	if args.DefaultNetworkAclId == nil {
 		return nil, errors.New("invalid value for required argument 'DefaultNetworkAclId'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource DefaultNetworkAcl
 	err := ctx.RegisterResource("aws:ec2/defaultNetworkAcl:DefaultNetworkAcl", name, args, &resource, opts...)
