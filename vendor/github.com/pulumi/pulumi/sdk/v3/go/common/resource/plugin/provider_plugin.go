@@ -86,14 +86,12 @@ type pluginConfig struct {
 	supportsPreview bool // true if this plugin supports previews for Create and Update.
 }
 
-// NewProvider attempts to bind to a given package's resource plugin and then creates a gRPC connection to it.  If the
-// plugin could not be found, or an error occurs while creating the child process, an error is returned.
-func NewProvider(host Host, ctx *Context, pkg tokens.Package, version *semver.Version,
-	options map[string]interface{}, disableProviderPreview bool, jsonConfig string,
-) (Provider, error) {
-	// See if this is a provider we just want to attach to
-	var plug *plugin
+// Checks PULUMI_DEBUG_PROVIDERS environment variable for any overrides for the provider identified
+// by pkg. If the user has requested to attach to a live provider, returns the port number from the
+// env var. For example, `PULUMI_DEBUG_PROVIDERS=aws:12345,gcp:678` will result in 12345 for aws.
+func GetProviderAttachPort(pkg tokens.Package) (*int, error) {
 	var optAttach string
+
 	if providersEnvVar, has := os.LookupEnv("PULUMI_DEBUG_PROVIDERS"); has {
 		for _, provider := range strings.Split(providersEnvVar, ",") {
 			parts := strings.SplitN(provider, ":", 2)
@@ -105,14 +103,35 @@ func NewProvider(host Host, ctx *Context, pkg tokens.Package, version *semver.Ve
 		}
 	}
 
+	if optAttach == "" {
+		return nil, nil
+	}
+
+	port, err := strconv.Atoi(optAttach)
+	if err != nil {
+		return nil, fmt.Errorf("Expected a numeric port, got %s in PULUMI_DEBUG_PROVIDERS: %w",
+			optAttach, err)
+	}
+	return &port, nil
+}
+
+// NewProvider attempts to bind to a given package's resource plugin and then creates a gRPC connection to it.  If the
+// plugin could not be found, or an error occurs while creating the child process, an error is returned.
+func NewProvider(host Host, ctx *Context, pkg tokens.Package, version *semver.Version,
+	options map[string]interface{}, disableProviderPreview bool, jsonConfig string,
+) (Provider, error) {
+	// See if this is a provider we just want to attach to
+	var plug *plugin
+
+	attachPort, err := GetProviderAttachPort(pkg)
+	if err != nil {
+		return nil, err
+	}
+
 	prefix := fmt.Sprintf("%v (resource)", pkg)
 
-	if optAttach != "" {
-		port, err := strconv.Atoi(optAttach)
-		if err != nil {
-			return nil, fmt.Errorf("Expected a numeric port, got %s in PULUMI_DEBUG_PROVIDERS: %w",
-				optAttach, err)
-		}
+	if attachPort != nil {
+		port := *attachPort
 
 		conn, err := dialPlugin(port, pkg.String(), prefix, providerPluginDialOptions(ctx, pkg, ""))
 		if err != nil {
@@ -1435,6 +1454,7 @@ func (p *provider) Construct(info ConstructInfo, typ tokens.Type, name string, p
 		IgnoreChanges:           options.IgnoreChanges,
 		ReplaceOnChanges:        options.ReplaceOnChanges,
 		RetainOnDelete:          options.RetainOnDelete,
+		AcceptsOutputValues:     true,
 	}
 	if ct := options.CustomTimeouts; ct != nil {
 		req.CustomTimeouts = &pulumirpc.ConstructRequest_CustomTimeouts{
@@ -1450,10 +1470,11 @@ func (p *provider) Construct(info ConstructInfo, typ tokens.Type, name string, p
 	}
 
 	outputs, err := UnmarshalProperties(resp.GetState(), MarshalOptions{
-		Label:         label + ".outputs",
-		KeepUnknowns:  info.DryRun,
-		KeepSecrets:   true,
-		KeepResources: true,
+		Label:            label + ".outputs",
+		KeepUnknowns:     info.DryRun,
+		KeepSecrets:      true,
+		KeepResources:    true,
+		KeepOutputValues: true,
 	})
 	if err != nil {
 		return ConstructResult{}, err
@@ -1669,15 +1690,16 @@ func (p *provider) Call(tok tokens.ModuleMember, args resource.PropertyMap, info
 	}
 
 	resp, err := client.Call(p.requestContext(), &pulumirpc.CallRequest{
-		Tok:             string(tok),
-		Args:            margs,
-		ArgDependencies: argDependencies,
-		Project:         info.Project,
-		Stack:           info.Stack,
-		Config:          config,
-		DryRun:          info.DryRun,
-		Parallel:        int32(info.Parallel),
-		MonitorEndpoint: info.MonitorAddress,
+		Tok:                 string(tok),
+		Args:                margs,
+		ArgDependencies:     argDependencies,
+		Project:             info.Project,
+		Stack:               info.Stack,
+		Config:              config,
+		DryRun:              info.DryRun,
+		Parallel:            int32(info.Parallel),
+		MonitorEndpoint:     info.MonitorAddress,
+		AcceptsOutputValues: true,
 	})
 	if err != nil {
 		rpcError := rpcerror.Convert(err)
@@ -1687,10 +1709,11 @@ func (p *provider) Call(tok tokens.ModuleMember, args resource.PropertyMap, info
 
 	// Unmarshal any return values.
 	ret, err := UnmarshalProperties(resp.GetReturn(), MarshalOptions{
-		Label:         label + ".returns",
-		KeepUnknowns:  info.DryRun,
-		KeepSecrets:   true,
-		KeepResources: true,
+		Label:            label + ".returns",
+		KeepUnknowns:     info.DryRun,
+		KeepSecrets:      true,
+		KeepResources:    true,
+		KeepOutputValues: true,
 	})
 	if err != nil {
 		return CallResult{}, err
