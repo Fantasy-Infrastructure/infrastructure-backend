@@ -19,6 +19,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -40,6 +41,7 @@ import (
 //			if err != nil {
 //				return err
 //			}
+//			// get listener from load_balancer_arn and port
 //			selected, err := lb.LookupLoadBalancer(ctx, &lb.LookupLoadBalancerArgs{
 //				Name: pulumi.StringRef("default-public"),
 //			}, nil)
@@ -58,6 +60,7 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 func LookupListener(ctx *pulumi.Context, args *LookupListenerArgs, opts ...pulumi.InvokeOption) (*LookupListenerResult, error) {
 	opts = internal.PkgInvokeDefaultOpts(opts)
 	var rv LookupListenerResult

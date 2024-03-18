@@ -21,8 +21,10 @@ import (
 // > This resource cannot be used with S3 directory buckets.
 //
 // ## Example Usage
+//
 // ### AWS Partition General Purpose Bucket
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -35,12 +37,15 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			exampleBucketV2, err := s3.NewBucketV2(ctx, "exampleBucketV2", nil)
+//			example, err := s3.NewBucketV2(ctx, "example", &s3.BucketV2Args{
+//				Bucket: pulumi.String("example"),
+//			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = s3.NewAccessPoint(ctx, "exampleAccessPoint", &s3.AccessPointArgs{
-//				Bucket: exampleBucketV2.ID(),
+//			_, err = s3.NewAccessPoint(ctx, "example", &s3.AccessPointArgs{
+//				Bucket: example.ID(),
+//				Name:   pulumi.String("example"),
 //			})
 //			if err != nil {
 //				return err
@@ -50,8 +55,11 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
+//
 // ### S3 on Outposts Bucket
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -66,20 +74,21 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			exampleBucket, err := s3control.NewBucket(ctx, "exampleBucket", &s3control.BucketArgs{
+//			example, err := s3control.NewBucket(ctx, "example", &s3control.BucketArgs{
 //				Bucket: pulumi.String("example"),
 //			})
 //			if err != nil {
 //				return err
 //			}
-//			exampleVpc, err := ec2.NewVpc(ctx, "exampleVpc", &ec2.VpcArgs{
+//			exampleVpc, err := ec2.NewVpc(ctx, "example", &ec2.VpcArgs{
 //				CidrBlock: pulumi.String("10.0.0.0/16"),
 //			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = s3.NewAccessPoint(ctx, "exampleAccessPoint", &s3.AccessPointArgs{
-//				Bucket: exampleBucket.Arn,
+//			_, err = s3.NewAccessPoint(ctx, "example", &s3.AccessPointArgs{
+//				Bucket: example.Arn,
+//				Name:   pulumi.String("example"),
 //				VpcConfiguration: &s3.AccessPointVpcConfigurationArgs{
 //					VpcId: exampleVpc.ID(),
 //				},
@@ -92,6 +101,7 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
@@ -102,17 +112,12 @@ import (
 // Import using the `account_id` and `name` separated by a colon (`:`) for Access Points associated with an AWS Partition S3 Bucket:
 //
 // ```sh
-//
-//	$ pulumi import aws:s3/accessPoint:AccessPoint example 123456789012:example
-//
+// $ pulumi import aws:s3/accessPoint:AccessPoint example 123456789012:example
 // ```
-//
-//	Import using the ARN for Access Points associated with an S3 on Outposts Bucket:
+// Import using the ARN for Access Points associated with an S3 on Outposts Bucket:
 //
 // ```sh
-//
-//	$ pulumi import aws:s3/accessPoint:AccessPoint example arn:aws:s3-outposts:us-east-1:123456789012:outpost/op-1234567890123456/accesspoint/example
-//
+// $ pulumi import aws:s3/accessPoint:AccessPoint example arn:aws:s3-outposts:us-east-1:123456789012:outpost/op-1234567890123456/accesspoint/example
 // ```
 type AccessPoint struct {
 	pulumi.CustomResourceState

@@ -18,6 +18,7 @@ import (
 //
 // Basic usage:
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -35,7 +36,7 @@ import (
 //			if err != nil {
 //				return err
 //			}
-//			exampleVpcIpam, err := ec2.NewVpcIpam(ctx, "exampleVpcIpam", &ec2.VpcIpamArgs{
+//			example, err := ec2.NewVpcIpam(ctx, "example", &ec2.VpcIpamArgs{
 //				OperatingRegions: ec2.VpcIpamOperatingRegionArray{
 //					&ec2.VpcIpamOperatingRegionArgs{
 //						RegionName: *pulumi.String(current.Name),
@@ -45,9 +46,9 @@ import (
 //			if err != nil {
 //				return err
 //			}
-//			_, err = ec2.NewVpcIpamPool(ctx, "exampleVpcIpamPool", &ec2.VpcIpamPoolArgs{
+//			_, err = ec2.NewVpcIpamPool(ctx, "example", &ec2.VpcIpamPoolArgs{
 //				AddressFamily: pulumi.String("ipv4"),
-//				IpamScopeId:   exampleVpcIpam.PrivateDefaultScopeId,
+//				IpamScopeId:   example.PrivateDefaultScopeId,
 //				Locale:        *pulumi.String(current.Name),
 //			})
 //			if err != nil {
@@ -58,9 +59,11 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // Nested Pools:
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -95,7 +98,7 @@ import (
 //			if err != nil {
 //				return err
 //			}
-//			_, err = ec2.NewVpcIpamPoolCidr(ctx, "parentTest", &ec2.VpcIpamPoolCidrArgs{
+//			_, err = ec2.NewVpcIpamPoolCidr(ctx, "parent_test", &ec2.VpcIpamPoolCidrArgs{
 //				IpamPoolId: parent.ID(),
 //				Cidr:       pulumi.String("172.20.0.0/16"),
 //			})
@@ -111,7 +114,7 @@ import (
 //			if err != nil {
 //				return err
 //			}
-//			_, err = ec2.NewVpcIpamPoolCidr(ctx, "childTest", &ec2.VpcIpamPoolCidrArgs{
+//			_, err = ec2.NewVpcIpamPoolCidr(ctx, "child_test", &ec2.VpcIpamPoolCidrArgs{
 //				IpamPoolId: child.ID(),
 //				Cidr:       pulumi.String("172.20.0.0/24"),
 //			})
@@ -123,15 +126,14 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
 // Using `pulumi import`, import IPAMs using the IPAM pool `id`. For example:
 //
 // ```sh
-//
-//	$ pulumi import aws:ec2/vpcIpamPool:VpcIpamPool example ipam-pool-0958f95207d978e1e
-//
+// $ pulumi import aws:ec2/vpcIpamPool:VpcIpamPool example ipam-pool-0958f95207d978e1e
 // ```
 type VpcIpamPool struct {
 	pulumi.CustomResourceState
@@ -190,10 +192,6 @@ func NewVpcIpamPool(ctx *pulumi.Context,
 	if args.IpamScopeId == nil {
 		return nil, errors.New("invalid value for required argument 'IpamScopeId'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource VpcIpamPool
 	err := ctx.RegisterResource("aws:ec2/vpcIpamPool:VpcIpamPool", name, args, &resource, opts...)

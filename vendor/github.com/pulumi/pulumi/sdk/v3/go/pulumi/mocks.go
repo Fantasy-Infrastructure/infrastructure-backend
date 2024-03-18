@@ -151,7 +151,7 @@ func (m *mockMonitor) StreamInvoke(ctx context.Context, in *pulumirpc.ResourceIn
 	panic("not implemented")
 }
 
-func (m *mockMonitor) Call(ctx context.Context, in *pulumirpc.CallRequest,
+func (m *mockMonitor) Call(ctx context.Context, in *pulumirpc.ResourceCallRequest,
 	opts ...grpc.CallOption,
 ) (*pulumirpc.CallResponse, error) {
 	panic("not implemented")
@@ -260,6 +260,12 @@ func (m *mockMonitor) RegisterResourceOutputs(ctx context.Context, in *pulumirpc
 	opts ...grpc.CallOption,
 ) (*emptypb.Empty, error) {
 	return &emptypb.Empty{}, nil
+}
+
+func (m *mockMonitor) RegisterStackTransform(ctx context.Context, in *pulumirpc.Callback,
+	opts ...grpc.CallOption,
+) (*emptypb.Empty, error) {
+	panic("not implemented")
 }
 
 type mockEngine struct {

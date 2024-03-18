@@ -18,6 +18,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -30,12 +31,14 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			exampleBucketV2, err := s3.NewBucketV2(ctx, "exampleBucketV2", nil)
+//			example, err := s3.NewBucketV2(ctx, "example", &s3.BucketV2Args{
+//				Bucket: pulumi.String("example"),
+//			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = s3.NewBucketPublicAccessBlock(ctx, "exampleBucketPublicAccessBlock", &s3.BucketPublicAccessBlockArgs{
-//				Bucket:                exampleBucketV2.ID(),
+//			_, err = s3.NewBucketPublicAccessBlock(ctx, "example", &s3.BucketPublicAccessBlockArgs{
+//				Bucket:                example.ID(),
 //				BlockPublicAcls:       pulumi.Bool(true),
 //				BlockPublicPolicy:     pulumi.Bool(true),
 //				IgnorePublicAcls:      pulumi.Bool(true),
@@ -49,15 +52,14 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
 // Using `pulumi import`, import `aws_s3_bucket_public_access_block` using the bucket name. For example:
 //
 // ```sh
-//
-//	$ pulumi import aws:s3/bucketPublicAccessBlock:BucketPublicAccessBlock example my-bucket
-//
+// $ pulumi import aws:s3/bucketPublicAccessBlock:BucketPublicAccessBlock example my-bucket
 // ```
 type BucketPublicAccessBlock struct {
 	pulumi.CustomResourceState

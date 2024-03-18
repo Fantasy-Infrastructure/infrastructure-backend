@@ -16,6 +16,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -29,17 +30,18 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := route53.NewResolverEndpoint(ctx, "foo", &route53.ResolverEndpointArgs{
+//				Name:      pulumi.String("foo"),
 //				Direction: pulumi.String("INBOUND"),
 //				SecurityGroupIds: pulumi.StringArray{
-//					aws_security_group.Sg1.Id,
-//					aws_security_group.Sg2.Id,
+//					sg1.Id,
+//					sg2.Id,
 //				},
 //				IpAddresses: route53.ResolverEndpointIpAddressArray{
 //					&route53.ResolverEndpointIpAddressArgs{
-//						SubnetId: pulumi.Any(aws_subnet.Sn1.Id),
+//						SubnetId: pulumi.Any(sn1.Id),
 //					},
 //					&route53.ResolverEndpointIpAddressArgs{
-//						SubnetId: pulumi.Any(aws_subnet.Sn2.Id),
+//						SubnetId: pulumi.Any(sn2.Id),
 //						Ip:       pulumi.String("10.0.64.4"),
 //					},
 //				},
@@ -59,17 +61,14 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
-// # Using `pulumi import`, import
-//
-// Route 53 Resolver endpoints using the Route 53 Resolver endpoint ID. For example:
+// Using `pulumi import`, import  Route 53 Resolver endpoints using the Route 53 Resolver endpoint ID. For example:
 //
 // ```sh
-//
-//	$ pulumi import aws:route53/resolverEndpoint:ResolverEndpoint foo rslvr-in-abcdef01234567890
-//
+// $ pulumi import aws:route53/resolverEndpoint:ResolverEndpoint foo rslvr-in-abcdef01234567890
 // ```
 type ResolverEndpoint struct {
 	pulumi.CustomResourceState
@@ -117,10 +116,6 @@ func NewResolverEndpoint(ctx *pulumi.Context,
 	if args.SecurityGroupIds == nil {
 		return nil, errors.New("invalid value for required argument 'SecurityGroupIds'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource ResolverEndpoint
 	err := ctx.RegisterResource("aws:route53/resolverEndpoint:ResolverEndpoint", name, args, &resource, opts...)

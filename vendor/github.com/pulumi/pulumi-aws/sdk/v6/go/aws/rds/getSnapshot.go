@@ -18,6 +18,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -48,6 +49,7 @@ import (
 //				DbInstanceIdentifier: prod.Identifier,
 //				MostRecent:           pulumi.Bool(true),
 //			}, nil)
+//			// Use the latest production snapshot to create a dev instance.
 //			_, err = rds.NewInstance(ctx, "dev", &rds.InstanceArgs{
 //				InstanceClass: pulumi.String("db.t2.micro"),
 //				DbName:        pulumi.String("mydbdev"),
@@ -63,6 +65,7 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 func LookupSnapshot(ctx *pulumi.Context, args *LookupSnapshotArgs, opts ...pulumi.InvokeOption) (*LookupSnapshotResult, error) {
 	opts = internal.PkgInvokeDefaultOpts(opts)
 	var rv LookupSnapshotResult

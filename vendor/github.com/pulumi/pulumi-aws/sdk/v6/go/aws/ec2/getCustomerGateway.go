@@ -15,6 +15,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -41,7 +42,7 @@ import (
 //				return err
 //			}
 //			main, err := ec2.NewVpnGateway(ctx, "main", &ec2.VpnGatewayArgs{
-//				VpcId:         pulumi.Any(aws_vpc.Main.Id),
+//				VpcId:         pulumi.Any(mainAwsVpc.Id),
 //				AmazonSideAsn: pulumi.String("7224"),
 //			})
 //			if err != nil {
@@ -61,6 +62,7 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 func LookupCustomerGateway(ctx *pulumi.Context, args *LookupCustomerGatewayArgs, opts ...pulumi.InvokeOption) (*LookupCustomerGatewayResult, error) {
 	opts = internal.PkgInvokeDefaultOpts(opts)
 	var rv LookupCustomerGatewayResult

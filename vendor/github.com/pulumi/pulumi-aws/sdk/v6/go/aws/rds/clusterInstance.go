@@ -31,6 +31,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -63,7 +64,7 @@ import (
 //			for index := 0; index < 2; index++ {
 //				key0 := index
 //				val0 := index
-//				__res, err := rds.NewClusterInstance(ctx, fmt.Sprintf("clusterInstances-%v", key0), &rds.ClusterInstanceArgs{
+//				__res, err := rds.NewClusterInstance(ctx, fmt.Sprintf("cluster_instances-%v", key0), &rds.ClusterInstanceArgs{
 //					Identifier:        pulumi.String(fmt.Sprintf("aurora-cluster-demo-%v", val0)),
 //					ClusterIdentifier: _default.ID(),
 //					InstanceClass:     pulumi.String("db.r4.large"),
@@ -80,15 +81,14 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
 // Using `pulumi import`, import RDS Cluster Instances using the `identifier`. For example:
 //
 // ```sh
-//
-//	$ pulumi import aws:rds/clusterInstance:ClusterInstance prod_instance_1 aurora-cluster-instance-1
-//
+// $ pulumi import aws:rds/clusterInstance:ClusterInstance prod_instance_1 aurora-cluster-instance-1
 // ```
 type ClusterInstance struct {
 	pulumi.CustomResourceState
@@ -182,10 +182,6 @@ func NewClusterInstance(ctx *pulumi.Context,
 	if args.InstanceClass == nil {
 		return nil, errors.New("invalid value for required argument 'InstanceClass'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource ClusterInstance
 	err := ctx.RegisterResource("aws:rds/clusterInstance:ClusterInstance", name, args, &resource, opts...)

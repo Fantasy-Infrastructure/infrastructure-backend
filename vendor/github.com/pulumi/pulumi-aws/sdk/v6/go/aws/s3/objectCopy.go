@@ -16,6 +16,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -30,17 +31,17 @@ import (
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := s3.NewObjectCopy(ctx, "test", &s3.ObjectCopyArgs{
 //				Bucket: pulumi.String("destination_bucket"),
+//				Key:    pulumi.String("destination_key"),
+//				Source: pulumi.String("source_bucket/source_key"),
 //				Grants: s3.ObjectCopyGrantArray{
 //					&s3.ObjectCopyGrantArgs{
+//						Uri:  pulumi.String("http://acs.amazonaws.com/groups/global/AllUsers"),
+//						Type: pulumi.String("Group"),
 //						Permissions: pulumi.StringArray{
 //							pulumi.String("READ"),
 //						},
-//						Type: pulumi.String("Group"),
-//						Uri:  pulumi.String("http://acs.amazonaws.com/groups/global/AllUsers"),
 //					},
 //				},
-//				Key:    pulumi.String("destination_key"),
-//				Source: pulumi.String("source_bucket/source_key"),
 //			})
 //			if err != nil {
 //				return err
@@ -50,6 +51,7 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 type ObjectCopy struct {
 	pulumi.CustomResourceState
 
@@ -191,7 +193,6 @@ func NewObjectCopy(ctx *pulumi.Context,
 		"kmsEncryptionContext",
 		"kmsKeyId",
 		"sourceCustomerKey",
-		"tagsAll",
 	})
 	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
