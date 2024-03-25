@@ -286,7 +286,7 @@ github.com/pulumi/pulumi-aws/sdk/v6/go/aws/route53
 github.com/pulumi/pulumi-aws/sdk/v6/go/aws/s3
 github.com/pulumi/pulumi-aws/sdk/v6/go/aws/servicediscovery
 github.com/pulumi/pulumi-aws/sdk/v6/go/aws/ssm
-# github.com/pulumi/pulumi-awsx/sdk/v2 v2.5.0
+# github.com/pulumi/pulumi-awsx/sdk/v2 v2.6.0
 ## explicit; go 1.21
 github.com/pulumi/pulumi-awsx/sdk/v2/go/awsx/ec2
 github.com/pulumi/pulumi-awsx/sdk/v2/go/awsx/internal
