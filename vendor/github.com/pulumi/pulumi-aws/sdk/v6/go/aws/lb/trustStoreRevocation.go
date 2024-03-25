@@ -15,8 +15,10 @@ import (
 // Provides a ELBv2 Trust Store Revocation for use with Application Load Balancer Listener resources.
 //
 // ## Example Usage
+//
 // ### Trust Store With Revocations
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -29,15 +31,16 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			testTrustStore, err := lb.NewTrustStore(ctx, "testTrustStore", &lb.TrustStoreArgs{
+//			test, err := lb.NewTrustStore(ctx, "test", &lb.TrustStoreArgs{
+//				Name:                         pulumi.String("tf-example-lb-ts"),
 //				CaCertificatesBundleS3Bucket: pulumi.String("..."),
 //				CaCertificatesBundleS3Key:    pulumi.String("..."),
 //			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = lb.NewTrustStoreRevocation(ctx, "testTrustStoreRevocation", &lb.TrustStoreRevocationArgs{
-//				TrustStoreArn:       testTrustStore.Arn,
+//			_, err = lb.NewTrustStoreRevocation(ctx, "test", &lb.TrustStoreRevocationArgs{
+//				TrustStoreArn:       test.Arn,
 //				RevocationsS3Bucket: pulumi.String("..."),
 //				RevocationsS3Key:    pulumi.String("..."),
 //			})
@@ -49,15 +52,14 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
 // Using `pulumi import`, import Trust Store Revocations using their ARN. For example:
 //
 // ```sh
-//
-//	$ pulumi import aws:lb/trustStoreRevocation:TrustStoreRevocation example arn:aws:elasticloadbalancing:us-west-2:187416307283:truststore/my-trust-store/20cfe21448b66314,6
-//
+// $ pulumi import aws:lb/trustStoreRevocation:TrustStoreRevocation example arn:aws:elasticloadbalancing:us-west-2:187416307283:truststore/my-trust-store/20cfe21448b66314,6
 // ```
 type TrustStoreRevocation struct {
 	pulumi.CustomResourceState

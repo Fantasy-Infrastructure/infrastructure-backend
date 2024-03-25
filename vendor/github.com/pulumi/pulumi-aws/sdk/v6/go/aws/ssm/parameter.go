@@ -17,8 +17,10 @@ import (
 // > **Note:** `overwrite` also makes it possible to overwrite an existing SSM Parameter that's not created by the provider before. This argument has been deprecated and will be removed in v6.0.0 of the provider. For more information on how this affects the behavior of this resource, see this issue comment.
 //
 // ## Example Usage
+//
 // ### Basic example
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -32,6 +34,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := ssm.NewParameter(ctx, "foo", &ssm.ParameterArgs{
+//				Name:  pulumi.String("foo"),
 //				Type:  pulumi.String("String"),
 //				Value: pulumi.String("bar"),
 //			})
@@ -43,8 +46,11 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
+//
 // ### Encrypted string using default SSM KMS key
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -66,7 +72,7 @@ import (
 //				InstanceClass:      pulumi.String("db.t2.micro"),
 //				DbName:             pulumi.String("mydb"),
 //				Username:           pulumi.String("foo"),
-//				Password:           pulumi.Any(_var.Database_master_password),
+//				Password:           pulumi.Any(databaseMasterPassword),
 //				DbSubnetGroupName:  pulumi.String("my_database_subnet_group"),
 //				ParameterGroupName: pulumi.String("default.mysql5.7"),
 //			})
@@ -74,9 +80,10 @@ import (
 //				return err
 //			}
 //			_, err = ssm.NewParameter(ctx, "secret", &ssm.ParameterArgs{
+//				Name:        pulumi.String("/production/database/password/master"),
 //				Description: pulumi.String("The parameter description"),
 //				Type:        pulumi.String("SecureString"),
-//				Value:       pulumi.Any(_var.Database_master_password),
+//				Value:       pulumi.Any(databaseMasterPassword),
 //				Tags: pulumi.StringMap{
 //					"environment": pulumi.String("production"),
 //				},
@@ -89,15 +96,14 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
 // Using `pulumi import`, import SSM Parameters using the parameter store `name`. For example:
 //
 // ```sh
-//
-//	$ pulumi import aws:ssm/parameter:Parameter my_param /my_path/my_paramname
-//
+// $ pulumi import aws:ssm/parameter:Parameter my_param /my_path/my_paramname
 // ```
 type Parameter struct {
 	pulumi.CustomResourceState
@@ -154,7 +160,6 @@ func NewParameter(ctx *pulumi.Context,
 		args.Value = pulumi.ToSecret(args.Value).(pulumi.StringPtrInput)
 	}
 	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
 		"value",
 	})
 	opts = append(opts, secrets)

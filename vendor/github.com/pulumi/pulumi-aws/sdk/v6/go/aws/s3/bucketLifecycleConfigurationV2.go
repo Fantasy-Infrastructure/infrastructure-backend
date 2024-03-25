@@ -31,6 +31,7 @@ import (
 // > This resource cannot be used with S3 directory buckets.
 //
 // ## Example Usage
+//
 // ### With neither a filter nor prefix specified
 //
 // The Lifecycle rule applies to a subset of objects based on the key name prefix (`""`).
@@ -38,6 +39,7 @@ import (
 // This configuration is intended to replicate the default behavior of the `lifecycleRule`
 // parameter in the AWS Provider `s3.BucketV2` resource prior to `v4.0`.
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -51,7 +53,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := s3.NewBucketLifecycleConfigurationV2(ctx, "example", &s3.BucketLifecycleConfigurationV2Args{
-//				Bucket: pulumi.Any(aws_s3_bucket.Bucket.Id),
+//				Bucket: pulumi.Any(bucket.Id),
 //				Rules: s3.BucketLifecycleConfigurationV2RuleArray{
 //					&s3.BucketLifecycleConfigurationV2RuleArgs{
 //						Id:     pulumi.String("rule-1"),
@@ -67,10 +69,13 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
+//
 // ### Specifying an empty filter
 //
 // The Lifecycle rule applies to all objects in the bucket.
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -84,7 +89,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := s3.NewBucketLifecycleConfigurationV2(ctx, "example", &s3.BucketLifecycleConfigurationV2Args{
-//				Bucket: pulumi.Any(aws_s3_bucket.Bucket.Id),
+//				Bucket: pulumi.Any(bucket.Id),
 //				Rules: s3.BucketLifecycleConfigurationV2RuleArray{
 //					&s3.BucketLifecycleConfigurationV2RuleArgs{
 //						Id:     pulumi.String("rule-1"),
@@ -101,10 +106,13 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
+//
 // ### Specifying a filter using key prefixes
 //
 // The Lifecycle rule applies to a subset of objects based on the key name prefix (`logs/`).
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -118,7 +126,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := s3.NewBucketLifecycleConfigurationV2(ctx, "example", &s3.BucketLifecycleConfigurationV2Args{
-//				Bucket: pulumi.Any(aws_s3_bucket.Bucket.Id),
+//				Bucket: pulumi.Any(bucket.Id),
 //				Rules: s3.BucketLifecycleConfigurationV2RuleArray{
 //					&s3.BucketLifecycleConfigurationV2RuleArgs{
 //						Id: pulumi.String("rule-1"),
@@ -137,9 +145,11 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // If you want to apply a Lifecycle action to a subset of objects based on different key name prefixes, specify separate rules.
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -153,7 +163,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := s3.NewBucketLifecycleConfigurationV2(ctx, "example", &s3.BucketLifecycleConfigurationV2Args{
-//				Bucket: pulumi.Any(aws_s3_bucket.Bucket.Id),
+//				Bucket: pulumi.Any(bucket.Id),
 //				Rules: s3.BucketLifecycleConfigurationV2RuleArray{
 //					&s3.BucketLifecycleConfigurationV2RuleArgs{
 //						Id: pulumi.String("rule-1"),
@@ -179,10 +189,13 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
+//
 // ### Specifying a filter based on an object tag
 //
 // The Lifecycle rule specifies a filter based on a tag key and value. The rule then applies only to a subset of objects with the specific tag.
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -196,7 +209,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := s3.NewBucketLifecycleConfigurationV2(ctx, "example", &s3.BucketLifecycleConfigurationV2Args{
-//				Bucket: pulumi.Any(aws_s3_bucket.Bucket.Id),
+//				Bucket: pulumi.Any(bucket.Id),
 //				Rules: s3.BucketLifecycleConfigurationV2RuleArray{
 //					&s3.BucketLifecycleConfigurationV2RuleArgs{
 //						Id: pulumi.String("rule-1"),
@@ -218,10 +231,13 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
+//
 // ### Specifying a filter based on multiple tags
 //
 // The Lifecycle rule directs Amazon S3 to perform lifecycle actions on objects with two tags (with the specific tag keys and values). Notice `tags` is wrapped in the `and` configuration block.
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -235,7 +251,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := s3.NewBucketLifecycleConfigurationV2(ctx, "example", &s3.BucketLifecycleConfigurationV2Args{
-//				Bucket: pulumi.Any(aws_s3_bucket.Bucket.Id),
+//				Bucket: pulumi.Any(bucket.Id),
 //				Rules: s3.BucketLifecycleConfigurationV2RuleArray{
 //					&s3.BucketLifecycleConfigurationV2RuleArgs{
 //						Id: pulumi.String("rule-1"),
@@ -259,10 +275,13 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
+//
 // ### Specifying a filter based on both prefix and one or more tags
 //
 // The Lifecycle rule directs Amazon S3 to perform lifecycle actions on objects with the specified prefix and two tags (with the specific tag keys and values). Notice both `prefix` and `tags` are wrapped in the `and` configuration block.
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -276,7 +295,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := s3.NewBucketLifecycleConfigurationV2(ctx, "example", &s3.BucketLifecycleConfigurationV2Args{
-//				Bucket: pulumi.Any(aws_s3_bucket.Bucket.Id),
+//				Bucket: pulumi.Any(bucket.Id),
 //				Rules: s3.BucketLifecycleConfigurationV2RuleArray{
 //					&s3.BucketLifecycleConfigurationV2RuleArgs{
 //						Id: pulumi.String("rule-1"),
@@ -301,10 +320,13 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
+//
 // ### Specifying a filter based on object size
 //
 // Object size values are in bytes. Maximum filter size is 5TB. Some storage classes have minimum object size limitations, for more information, see [Comparing the Amazon S3 storage classes](https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html#sc-compare).
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -318,7 +340,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := s3.NewBucketLifecycleConfigurationV2(ctx, "example", &s3.BucketLifecycleConfigurationV2Args{
-//				Bucket: pulumi.Any(aws_s3_bucket.Bucket.Id),
+//				Bucket: pulumi.Any(bucket.Id),
 //				Rules: s3.BucketLifecycleConfigurationV2RuleArray{
 //					&s3.BucketLifecycleConfigurationV2RuleArgs{
 //						Id: pulumi.String("rule-1"),
@@ -337,10 +359,13 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
+//
 // ### Specifying a filter based on object size range and prefix
 //
 // The `objectSizeGreaterThan` must be less than the `objectSizeLessThan`. Notice both the object size range and prefix are wrapped in the `and` configuration block.
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -354,7 +379,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := s3.NewBucketLifecycleConfigurationV2(ctx, "example", &s3.BucketLifecycleConfigurationV2Args{
-//				Bucket: pulumi.Any(aws_s3_bucket.Bucket.Id),
+//				Bucket: pulumi.Any(bucket.Id),
 //				Rules: s3.BucketLifecycleConfigurationV2RuleArray{
 //					&s3.BucketLifecycleConfigurationV2RuleArgs{
 //						Id: pulumi.String("rule-1"),
@@ -377,8 +402,11 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
+//
 // ### Creating a Lifecycle Configuration for a bucket with versioning
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -391,11 +419,13 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			bucket, err := s3.NewBucketV2(ctx, "bucket", nil)
+//			bucket, err := s3.NewBucketV2(ctx, "bucket", &s3.BucketV2Args{
+//				Bucket: pulumi.String("my-bucket"),
+//			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = s3.NewBucketAclV2(ctx, "bucketAcl", &s3.BucketAclV2Args{
+//			_, err = s3.NewBucketAclV2(ctx, "bucket_acl", &s3.BucketAclV2Args{
 //				Bucket: bucket.ID(),
 //				Acl:    pulumi.String("private"),
 //			})
@@ -446,18 +476,20 @@ import (
 //			if err != nil {
 //				return err
 //			}
-//			versioningBucket, err := s3.NewBucketV2(ctx, "versioningBucket", nil)
+//			versioningBucket, err := s3.NewBucketV2(ctx, "versioning_bucket", &s3.BucketV2Args{
+//				Bucket: pulumi.String("my-versioning-bucket"),
+//			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = s3.NewBucketAclV2(ctx, "versioningBucketAcl", &s3.BucketAclV2Args{
+//			_, err = s3.NewBucketAclV2(ctx, "versioning_bucket_acl", &s3.BucketAclV2Args{
 //				Bucket: versioningBucket.ID(),
 //				Acl:    pulumi.String("private"),
 //			})
 //			if err != nil {
 //				return err
 //			}
-//			versioning, err := s3.NewBucketVersioningV2(ctx, "versioning", &s3.BucketVersioningV2Args{
+//			_, err = s3.NewBucketVersioningV2(ctx, "versioning", &s3.BucketVersioningV2Args{
 //				Bucket: versioningBucket.ID(),
 //				VersioningConfiguration: &s3.BucketVersioningV2VersioningConfigurationArgs{
 //					Status: pulumi.String("Enabled"),
@@ -490,9 +522,7 @@ import (
 //						Status: pulumi.String("Enabled"),
 //					},
 //				},
-//			}, pulumi.DependsOn([]pulumi.Resource{
-//				versioning,
-//			}))
+//			})
 //			if err != nil {
 //				return err
 //			}
@@ -501,6 +531,7 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
@@ -511,17 +542,12 @@ import (
 // If the owner (account ID) of the source bucket is the same account used to configure the AWS Provider, import using the `bucket`:
 //
 // ```sh
-//
-//	$ pulumi import aws:s3/bucketLifecycleConfigurationV2:BucketLifecycleConfigurationV2 example bucket-name
-//
+// $ pulumi import aws:s3/bucketLifecycleConfigurationV2:BucketLifecycleConfigurationV2 example bucket-name
 // ```
-//
-//	If the owner (account ID) of the source bucket differs from the account used to configure the AWS Provider, import using the `bucket` and `expected_bucket_owner` separated by a comma (`,`):
+// If the owner (account ID) of the source bucket differs from the account used to configure the AWS Provider, import using the `bucket` and `expected_bucket_owner` separated by a comma (`,`):
 //
 // ```sh
-//
-//	$ pulumi import aws:s3/bucketLifecycleConfigurationV2:BucketLifecycleConfigurationV2 example bucket-name,123456789012
-//
+// $ pulumi import aws:s3/bucketLifecycleConfigurationV2:BucketLifecycleConfigurationV2 example bucket-name,123456789012
 // ```
 type BucketLifecycleConfigurationV2 struct {
 	pulumi.CustomResourceState

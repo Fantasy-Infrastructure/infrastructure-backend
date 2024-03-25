@@ -38,18 +38,15 @@ type ProgramInfo struct {
 }
 
 func NewProgramInfo(rootDirectory, programDirectory, entryPoint string, options map[string]any) ProgramInfo {
-	isValidPath := func(path string) bool {
-		return filepath.IsLocal(path) || filepath.IsAbs(path)
-	}
 	isFileName := func(path string) bool {
 		return filepath.Base(path) == path
 	}
 
-	if !isValidPath(rootDirectory) {
+	if !filepath.IsAbs(rootDirectory) {
 		panic(fmt.Sprintf("rootDirectory '%s' is not a valid path when creating ProgramInfo", rootDirectory))
 	}
 
-	if !isValidPath(programDirectory) {
+	if !filepath.IsAbs(programDirectory) {
 		panic(fmt.Sprintf("programDirectory '%s' is not a valid path when creating ProgramInfo", programDirectory))
 	}
 
@@ -151,9 +148,14 @@ type LanguageRuntime interface {
 	Pack(packageDirectory string, version semver.Version, destinationDirectory string) (string, error)
 }
 
+// DependencyInfo contains information about a dependency reported by a language runtime.
+// These are the languages dependencies, they are not necessarily Pulumi packages.
 type DependencyInfo struct {
-	Name    string
-	Version semver.Version
+	// The name of the dependency.
+	Name string
+	// The version of the dependency. Unlike most versions in the system this is not guaranteed to be a semantic
+	// version.
+	Version string
 }
 
 type AboutInfo struct {

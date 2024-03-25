@@ -15,8 +15,10 @@ import (
 // Manages an AWS DocDB (DocumentDB) Elastic Cluster.
 //
 // ## Example Usage
+//
 // ### Basic Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -30,6 +32,7 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := docdb.NewElasticCluster(ctx, "example", &docdb.ElasticClusterArgs{
+//				Name:              pulumi.String("my-docdb-cluster"),
 //				AdminUserName:     pulumi.String("foo"),
 //				AdminUserPassword: pulumi.String("mustbeeightchars"),
 //				AuthType:          pulumi.String("PLAIN_TEXT"),
@@ -44,15 +47,14 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
 // Using `pulumi import`, import DocDB (DocumentDB) Elastic Cluster using the `arn` argument. For example,
 //
 // ```sh
-//
-//	$ pulumi import aws:docdb/elasticCluster:ElasticCluster example arn:aws:docdb-elastic:us-east-1:000011112222:cluster/12345678-7abc-def0-1234-56789abcdef
-//
+// $ pulumi import aws:docdb/elasticCluster:ElasticCluster example arn:aws:docdb-elastic:us-east-1:000011112222:cluster/12345678-7abc-def0-1234-56789abcdef
 // ```
 type ElasticCluster struct {
 	pulumi.CustomResourceState
@@ -117,7 +119,6 @@ func NewElasticCluster(ctx *pulumi.Context,
 	}
 	secrets := pulumi.AdditionalSecretOutputs([]string{
 		"adminUserPassword",
-		"tagsAll",
 	})
 	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
