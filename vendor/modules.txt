@@ -174,6 +174,9 @@ github.com/golang/protobuf/ptypes
 github.com/golang/protobuf/ptypes/any
 github.com/golang/protobuf/ptypes/duration
 github.com/golang/protobuf/ptypes/timestamp
+# github.com/google/uuid v1.3.0
+## explicit
+github.com/google/uuid
 # github.com/grpc-ecosystem/grpc-opentracing v0.0.0-20180507213350-8e809c8a8645
 ## explicit
 github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc
@@ -267,7 +270,7 @@ github.com/pulumi/esc/internal/util
 github.com/pulumi/esc/schema
 github.com/pulumi/esc/syntax
 github.com/pulumi/esc/syntax/encoding
-# github.com/pulumi/pulumi-aws/sdk/v6 v6.20.1
+# github.com/pulumi/pulumi-aws/sdk/v6 v6.27.0
 ## explicit; go 1.21
 github.com/pulumi/pulumi-aws/sdk/v6/go/aws
 github.com/pulumi/pulumi-aws/sdk/v6/go/aws/acm
@@ -298,7 +301,7 @@ github.com/pulumi/pulumi-docker/sdk/v4/go/docker/internal
 ## explicit; go 1.21
 github.com/pulumi/pulumi-random/sdk/v4/go/random
 github.com/pulumi/pulumi-random/sdk/v4/go/random/internal
-# github.com/pulumi/pulumi/sdk/v3 v3.104.2
+# github.com/pulumi/pulumi/sdk/v3 v3.108.1
 ## explicit; go 1.18
 github.com/pulumi/pulumi/sdk/v3/go/common/apitype
 github.com/pulumi/pulumi/sdk/v3/go/common/constant

@@ -18,6 +18,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -37,7 +38,9 @@ import (
 //			if err != nil {
 //				return err
 //			}
-//			auroraCluster, err := rds.NewCluster(ctx, "auroraCluster", &rds.ClusterArgs{
+//			// Use the last snapshot of the dev database before it was destroyed to create
+//			// a new dev database.
+//			aurora, err := rds.NewCluster(ctx, "aurora", &rds.ClusterArgs{
 //				ClusterIdentifier:  pulumi.String("development_cluster"),
 //				SnapshotIdentifier: *pulumi.String(developmentFinalSnapshot.Id),
 //				DbSubnetGroupName:  pulumi.String("my_db_subnet_group"),
@@ -45,8 +48,8 @@ import (
 //			if err != nil {
 //				return err
 //			}
-//			_, err = rds.NewClusterInstance(ctx, "auroraClusterInstance", &rds.ClusterInstanceArgs{
-//				ClusterIdentifier: auroraCluster.ID(),
+//			_, err = rds.NewClusterInstance(ctx, "aurora", &rds.ClusterInstanceArgs{
+//				ClusterIdentifier: aurora.ID(),
 //				InstanceClass:     pulumi.String("db.t2.small"),
 //				DbSubnetGroupName: pulumi.String("my_db_subnet_group"),
 //			})
@@ -58,6 +61,7 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 func LookupClusterSnapshot(ctx *pulumi.Context, args *LookupClusterSnapshotArgs, opts ...pulumi.InvokeOption) (*LookupClusterSnapshotResult, error) {
 	opts = internal.PkgInvokeDefaultOpts(opts)
 	var rv LookupClusterSnapshotResult

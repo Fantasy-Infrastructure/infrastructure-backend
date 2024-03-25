@@ -17,6 +17,7 @@ import (
 //
 // To retrieve a baseline provided by AWS:
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -30,9 +31,9 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := ssm.LookupPatchBaseline(ctx, &ssm.LookupPatchBaselineArgs{
+//				Owner:           "AWS",
 //				NamePrefix:      pulumi.StringRef("AWS-"),
 //				OperatingSystem: pulumi.StringRef("CENTOS"),
-//				Owner:           "AWS",
 //			}, nil)
 //			if err != nil {
 //				return err
@@ -42,9 +43,11 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // To retrieve a baseline on your account:
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -58,10 +61,10 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := ssm.LookupPatchBaseline(ctx, &ssm.LookupPatchBaselineArgs{
-//				DefaultBaseline: pulumi.BoolRef(true),
-//				NamePrefix:      pulumi.StringRef("MyCustomBaseline"),
-//				OperatingSystem: pulumi.StringRef("WINDOWS"),
 //				Owner:           "Self",
+//				NamePrefix:      pulumi.StringRef("MyCustomBaseline"),
+//				DefaultBaseline: pulumi.BoolRef(true),
+//				OperatingSystem: pulumi.StringRef("WINDOWS"),
 //			}, nil)
 //			if err != nil {
 //				return err
@@ -71,6 +74,7 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 func LookupPatchBaseline(ctx *pulumi.Context, args *LookupPatchBaselineArgs, opts ...pulumi.InvokeOption) (*LookupPatchBaselineResult, error) {
 	opts = internal.PkgInvokeDefaultOpts(opts)
 	var rv LookupPatchBaselineResult

@@ -21,6 +21,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -55,6 +56,7 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 func LookupTargetGroup(ctx *pulumi.Context, args *LookupTargetGroupArgs, opts ...pulumi.InvokeOption) (*LookupTargetGroupResult, error) {
 	opts = internal.PkgInvokeDefaultOpts(opts)
 	var rv LookupTargetGroupResult
@@ -88,6 +90,7 @@ type LookupTargetGroupResult struct {
 	// The provider-assigned unique ID for this managed resource.
 	Id                             string                   `pulumi:"id"`
 	LambdaMultiValueHeadersEnabled bool                     `pulumi:"lambdaMultiValueHeadersEnabled"`
+	LoadBalancerArns               []string                 `pulumi:"loadBalancerArns"`
 	LoadBalancingAlgorithmType     string                   `pulumi:"loadBalancingAlgorithmType"`
 	LoadBalancingAnomalyMitigation string                   `pulumi:"loadBalancingAnomalyMitigation"`
 	LoadBalancingCrossZoneEnabled  string                   `pulumi:"loadBalancingCrossZoneEnabled"`
@@ -176,6 +179,10 @@ func (o LookupTargetGroupResultOutput) Id() pulumi.StringOutput {
 
 func (o LookupTargetGroupResultOutput) LambdaMultiValueHeadersEnabled() pulumi.BoolOutput {
 	return o.ApplyT(func(v LookupTargetGroupResult) bool { return v.LambdaMultiValueHeadersEnabled }).(pulumi.BoolOutput)
+}
+
+func (o LookupTargetGroupResultOutput) LoadBalancerArns() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v LookupTargetGroupResult) []string { return v.LoadBalancerArns }).(pulumi.StringArrayOutput)
 }
 
 func (o LookupTargetGroupResultOutput) LoadBalancingAlgorithmType() pulumi.StringOutput {

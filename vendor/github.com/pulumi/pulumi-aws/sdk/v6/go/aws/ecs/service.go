@@ -19,6 +19,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -32,10 +33,11 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := ecs.NewService(ctx, "mongo", &ecs.ServiceArgs{
-//				Cluster:        pulumi.Any(aws_ecs_cluster.Foo.Id),
-//				TaskDefinition: pulumi.Any(aws_ecs_task_definition.Mongo.Arn),
+//				Name:           pulumi.String("mongodb"),
+//				Cluster:        pulumi.Any(fooAwsEcsCluster.Id),
+//				TaskDefinition: pulumi.Any(mongoAwsEcsTaskDefinition.Arn),
 //				DesiredCount:   pulumi.Int(3),
-//				IamRole:        pulumi.Any(aws_iam_role.Foo.Arn),
+//				IamRole:        pulumi.Any(fooAwsIamRole.Arn),
 //				OrderedPlacementStrategies: ecs.ServiceOrderedPlacementStrategyArray{
 //					&ecs.ServiceOrderedPlacementStrategyArgs{
 //						Type:  pulumi.String("binpack"),
@@ -44,7 +46,7 @@ import (
 //				},
 //				LoadBalancers: ecs.ServiceLoadBalancerArray{
 //					&ecs.ServiceLoadBalancerArgs{
-//						TargetGroupArn: pulumi.Any(aws_lb_target_group.Foo.Arn),
+//						TargetGroupArn: pulumi.Any(foo.Arn),
 //						ContainerName:  pulumi.String("mongo"),
 //						ContainerPort:  pulumi.Int(8080),
 //					},
@@ -55,9 +57,7 @@ import (
 //						Expression: pulumi.String("attribute:ecs.availability-zone in [us-west-2a, us-west-2b]"),
 //					},
 //				},
-//			}, pulumi.DependsOn([]pulumi.Resource{
-//				aws_iam_role_policy.Foo,
-//			}))
+//			})
 //			if err != nil {
 //				return err
 //			}
@@ -66,10 +66,13 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
+//
 // ### Ignoring Changes to Desired Count
 //
 // You can use [`ignoreChanges`](https://www.pulumi.com/docs/intro/concepts/programming-model/#ignorechanges) to create an ECS service with an initial count of running instances, then ignore any changes to that count caused externally (e.g. Application Autoscaling).
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -93,8 +96,11 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
+//
 // ### Daemon Scheduling Strategy
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -108,8 +114,9 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := ecs.NewService(ctx, "bar", &ecs.ServiceArgs{
-//				Cluster:            pulumi.Any(aws_ecs_cluster.Foo.Id),
-//				TaskDefinition:     pulumi.Any(aws_ecs_task_definition.Bar.Arn),
+//				Name:               pulumi.String("bar"),
+//				Cluster:            pulumi.Any(foo.Id),
+//				TaskDefinition:     pulumi.Any(barAwsEcsTaskDefinition.Arn),
 //				SchedulingStrategy: pulumi.String("DAEMON"),
 //			})
 //			if err != nil {
@@ -120,8 +127,11 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
+//
 // ### CloudWatch Deployment Alarms
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -135,12 +145,13 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := ecs.NewService(ctx, "example", &ecs.ServiceArgs{
-//				Cluster: pulumi.Any(aws_ecs_cluster.Example.Id),
+//				Name:    pulumi.String("example"),
+//				Cluster: pulumi.Any(exampleAwsEcsCluster.Id),
 //				Alarms: &ecs.ServiceAlarmsArgs{
 //					Enable:   pulumi.Bool(true),
 //					Rollback: pulumi.Bool(true),
 //					AlarmNames: pulumi.StringArray{
-//						aws_cloudwatch_metric_alarm.Example.Alarm_name,
+//						exampleAwsCloudwatchMetricAlarm.AlarmName,
 //					},
 //				},
 //			})
@@ -152,8 +163,11 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
+//
 // ### External Deployment Controller
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -167,7 +181,8 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := ecs.NewService(ctx, "example", &ecs.ServiceArgs{
-//				Cluster: pulumi.Any(aws_ecs_cluster.Example.Id),
+//				Name:    pulumi.String("example"),
+//				Cluster: pulumi.Any(exampleAwsEcsCluster.Id),
 //				DeploymentController: &ecs.ServiceDeploymentControllerArgs{
 //					Type: pulumi.String("EXTERNAL"),
 //				},
@@ -180,15 +195,14 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
 // Using `pulumi import`, import ECS services using the `name` together with ecs cluster `name`. For example:
 //
 // ```sh
-//
-//	$ pulumi import aws:ecs/service:Service imported cluster-name/service-name
-//
+// $ pulumi import aws:ecs/service:Service imported cluster-name/service-name
 // ```
 type Service struct {
 	pulumi.CustomResourceState
@@ -264,10 +278,6 @@ func NewService(ctx *pulumi.Context,
 		args = &ServiceArgs{}
 	}
 
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource Service
 	err := ctx.RegisterResource("aws:ecs/service:Service", name, args, &resource, opts...)

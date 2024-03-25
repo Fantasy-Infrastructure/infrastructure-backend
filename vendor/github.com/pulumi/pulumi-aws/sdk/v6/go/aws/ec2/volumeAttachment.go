@@ -19,6 +19,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -50,7 +51,7 @@ import (
 //			if err != nil {
 //				return err
 //			}
-//			_, err = ec2.NewVolumeAttachment(ctx, "ebsAtt", &ec2.VolumeAttachmentArgs{
+//			_, err = ec2.NewVolumeAttachment(ctx, "ebs_att", &ec2.VolumeAttachmentArgs{
 //				DeviceName: pulumi.String("/dev/sdh"),
 //				VolumeId:   example.ID(),
 //				InstanceId: web.ID(),
@@ -63,15 +64,14 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
 // Using `pulumi import`, import EBS Volume Attachments using `DEVICE_NAME:VOLUME_ID:INSTANCE_ID`. For example:
 //
 // ```sh
-//
-//	$ pulumi import aws:ec2/volumeAttachment:VolumeAttachment example /dev/sdh:vol-049df61146c4d7901:i-12345678
-//
+// $ pulumi import aws:ec2/volumeAttachment:VolumeAttachment example /dev/sdh:vol-049df61146c4d7901:i-12345678
 // ```
 type VolumeAttachment struct {
 	pulumi.CustomResourceState

@@ -31,6 +31,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -63,7 +64,7 @@ import (
 //			for index := 0; index < 2; index++ {
 //				key0 := index
 //				val0 := index
-//				__res, err := rds.NewClusterInstance(ctx, fmt.Sprintf("clusterInstances-%v", key0), &rds.ClusterInstanceArgs{
+//				__res, err := rds.NewClusterInstance(ctx, fmt.Sprintf("cluster_instances-%v", key0), &rds.ClusterInstanceArgs{
 //					Identifier:        pulumi.String(fmt.Sprintf("aurora-cluster-demo-%v", val0)),
 //					ClusterIdentifier: _default.ID(),
 //					InstanceClass:     pulumi.String("db.r4.large"),
@@ -80,15 +81,14 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
 // Using `pulumi import`, import RDS Cluster Instances using the `identifier`. For example:
 //
 // ```sh
-//
-//	$ pulumi import aws:rds/clusterInstance:ClusterInstance prod_instance_1 aurora-cluster-instance-1
-//
+// $ pulumi import aws:rds/clusterInstance:ClusterInstance prod_instance_1 aurora-cluster-instance-1
 // ```
 type ClusterInstance struct {
 	pulumi.CustomResourceState
@@ -118,7 +118,7 @@ type ClusterInstance struct {
 	// DNS address for this instance. May not be writable
 	Endpoint pulumi.StringOutput `pulumi:"endpoint"`
 	// Name of the database engine to be used for the RDS cluster instance.
-	// Valid Values: `aurora-mysql`, `aurora-postgresql`.
+	// Valid Values: `aurora-mysql`, `aurora-postgresql`, `mysql`, `postgres`.(Note that `mysql` and `postgres` are Multi-AZ RDS clusters).
 	Engine pulumi.StringOutput `pulumi:"engine"`
 	// Database engine version.
 	EngineVersion pulumi.StringOutput `pulumi:"engineVersion"`
@@ -182,10 +182,6 @@ func NewClusterInstance(ctx *pulumi.Context,
 	if args.InstanceClass == nil {
 		return nil, errors.New("invalid value for required argument 'InstanceClass'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource ClusterInstance
 	err := ctx.RegisterResource("aws:rds/clusterInstance:ClusterInstance", name, args, &resource, opts...)
@@ -234,7 +230,7 @@ type clusterInstanceState struct {
 	// DNS address for this instance. May not be writable
 	Endpoint *string `pulumi:"endpoint"`
 	// Name of the database engine to be used for the RDS cluster instance.
-	// Valid Values: `aurora-mysql`, `aurora-postgresql`.
+	// Valid Values: `aurora-mysql`, `aurora-postgresql`, `mysql`, `postgres`.(Note that `mysql` and `postgres` are Multi-AZ RDS clusters).
 	Engine *string `pulumi:"engine"`
 	// Database engine version.
 	EngineVersion *string `pulumi:"engineVersion"`
@@ -308,7 +304,7 @@ type ClusterInstanceState struct {
 	// DNS address for this instance. May not be writable
 	Endpoint pulumi.StringPtrInput
 	// Name of the database engine to be used for the RDS cluster instance.
-	// Valid Values: `aurora-mysql`, `aurora-postgresql`.
+	// Valid Values: `aurora-mysql`, `aurora-postgresql`, `mysql`, `postgres`.(Note that `mysql` and `postgres` are Multi-AZ RDS clusters).
 	Engine pulumi.StringPtrInput
 	// Database engine version.
 	EngineVersion pulumi.StringPtrInput
@@ -380,7 +376,7 @@ type clusterInstanceArgs struct {
 	// DB subnet group to associate with this DB instance. **NOTE:** This must match the `dbSubnetGroupName` of the attached `rds.Cluster`.
 	DbSubnetGroupName *string `pulumi:"dbSubnetGroupName"`
 	// Name of the database engine to be used for the RDS cluster instance.
-	// Valid Values: `aurora-mysql`, `aurora-postgresql`.
+	// Valid Values: `aurora-mysql`, `aurora-postgresql`, `mysql`, `postgres`.(Note that `mysql` and `postgres` are Multi-AZ RDS clusters).
 	Engine string `pulumi:"engine"`
 	// Database engine version.
 	EngineVersion *string `pulumi:"engineVersion"`
@@ -433,7 +429,7 @@ type ClusterInstanceArgs struct {
 	// DB subnet group to associate with this DB instance. **NOTE:** This must match the `dbSubnetGroupName` of the attached `rds.Cluster`.
 	DbSubnetGroupName pulumi.StringPtrInput
 	// Name of the database engine to be used for the RDS cluster instance.
-	// Valid Values: `aurora-mysql`, `aurora-postgresql`.
+	// Valid Values: `aurora-mysql`, `aurora-postgresql`, `mysql`, `postgres`.(Note that `mysql` and `postgres` are Multi-AZ RDS clusters).
 	Engine pulumi.StringInput
 	// Database engine version.
 	EngineVersion pulumi.StringPtrInput
@@ -613,7 +609,7 @@ func (o ClusterInstanceOutput) Endpoint() pulumi.StringOutput {
 }
 
 // Name of the database engine to be used for the RDS cluster instance.
-// Valid Values: `aurora-mysql`, `aurora-postgresql`.
+// Valid Values: `aurora-mysql`, `aurora-postgresql`, `mysql`, `postgres`.(Note that `mysql` and `postgres` are Multi-AZ RDS clusters).
 func (o ClusterInstanceOutput) Engine() pulumi.StringOutput {
 	return o.ApplyT(func(v *ClusterInstance) pulumi.StringOutput { return v.Engine }).(pulumi.StringOutput)
 }

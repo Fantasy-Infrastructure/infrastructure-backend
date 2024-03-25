@@ -15,6 +15,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -40,7 +41,8 @@ import (
 //			if err != nil {
 //				return err
 //			}
-//			_, err = ec2.NewSecurityGroup(ctx, "fromEurope", &ec2.SecurityGroupArgs{
+//			_, err = ec2.NewSecurityGroup(ctx, "from_europe", &ec2.SecurityGroupArgs{
+//				Name: pulumi.String("from_europe"),
 //				Ingress: ec2.SecurityGroupIngressArray{
 //					&ec2.SecurityGroupIngressArgs{
 //						FromPort:       pulumi.Int(443),
@@ -63,6 +65,7 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 func GetIpRanges(ctx *pulumi.Context, args *GetIpRangesArgs, opts ...pulumi.InvokeOption) (*GetIpRangesResult, error) {
 	opts = internal.PkgInvokeDefaultOpts(opts)
 	var rv GetIpRangesResult

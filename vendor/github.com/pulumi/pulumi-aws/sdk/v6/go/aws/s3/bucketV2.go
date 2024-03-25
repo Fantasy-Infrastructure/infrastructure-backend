@@ -18,8 +18,10 @@ import (
 // > Object Lock can be enabled by using the `objectLockEnable` attribute or by using the `s3.BucketObjectLockConfigurationV2` resource. Please note, that by using the resource, Object Lock can be enabled/disabled without destroying and recreating the bucket.
 //
 // ## Example Usage
+//
 // ### Private Bucket With Tags
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -33,9 +35,10 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := s3.NewBucketV2(ctx, "example", &s3.BucketV2Args{
+//				Bucket: pulumi.String("my-tf-test-bucket"),
 //				Tags: pulumi.StringMap{
-//					"Environment": pulumi.String("Dev"),
 //					"Name":        pulumi.String("My bucket"),
+//					"Environment": pulumi.String("Dev"),
 //				},
 //			})
 //			if err != nil {
@@ -46,15 +49,14 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
 // Using `pulumi import`, import S3 bucket using the `bucket`. For example:
 //
 // ```sh
-//
-//	$ pulumi import aws:s3/bucketV2:BucketV2 bucket bucket-name
-//
+// $ pulumi import aws:s3/bucketV2:BucketV2 bucket bucket-name
 // ```
 type BucketV2 struct {
 	pulumi.CustomResourceState
@@ -175,10 +177,6 @@ func NewBucketV2(ctx *pulumi.Context,
 		},
 	})
 	opts = append(opts, aliases)
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource BucketV2
 	err := ctx.RegisterResource("aws:s3/bucketV2:BucketV2", name, args, &resource, opts...)

@@ -15,6 +15,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -28,9 +29,10 @@ import (
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
 //			_, err := cloudwatch.NewLogGroup(ctx, "yada", &cloudwatch.LogGroupArgs{
+//				Name: pulumi.String("Yada"),
 //				Tags: pulumi.StringMap{
-//					"Application": pulumi.String("serviceA"),
 //					"Environment": pulumi.String("production"),
+//					"Application": pulumi.String("serviceA"),
 //				},
 //			})
 //			if err != nil {
@@ -41,15 +43,14 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
 // Using `pulumi import`, import Cloudwatch Log Groups using the `name`. For example:
 //
 // ```sh
-//
-//	$ pulumi import aws:cloudwatch/logGroup:LogGroup test_group yada
-//
+// $ pulumi import aws:cloudwatch/logGroup:LogGroup test_group yada
 // ```
 type LogGroup struct {
 	pulumi.CustomResourceState
@@ -87,10 +88,6 @@ func NewLogGroup(ctx *pulumi.Context,
 		args = &LogGroupArgs{}
 	}
 
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource LogGroup
 	err := ctx.RegisterResource("aws:cloudwatch/logGroup:LogGroup", name, args, &resource, opts...)

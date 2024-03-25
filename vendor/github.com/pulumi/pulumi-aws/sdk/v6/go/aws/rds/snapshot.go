@@ -16,6 +16,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -55,15 +56,14 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
 // Using `pulumi import`, import `aws_db_snapshot` using the snapshot identifier. For example:
 //
 // ```sh
-//
-//	$ pulumi import aws:rds/snapshot:Snapshot example my-snapshot
-//
+// $ pulumi import aws:rds/snapshot:Snapshot example my-snapshot
 // ```
 type Snapshot struct {
 	pulumi.CustomResourceState
@@ -127,10 +127,6 @@ func NewSnapshot(ctx *pulumi.Context,
 	if args.DbSnapshotIdentifier == nil {
 		return nil, errors.New("invalid value for required argument 'DbSnapshotIdentifier'")
 	}
-	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"tagsAll",
-	})
-	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource Snapshot
 	err := ctx.RegisterResource("aws:rds/snapshot:Snapshot", name, args, &resource, opts...)

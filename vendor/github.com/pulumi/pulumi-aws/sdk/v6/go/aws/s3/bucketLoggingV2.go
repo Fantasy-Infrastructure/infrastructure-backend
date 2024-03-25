@@ -22,6 +22,7 @@ import (
 //
 // ## Example Usage
 //
+// <!--Start PulumiCodeChooser -->
 // ```go
 // package main
 //
@@ -34,30 +35,34 @@ import (
 //
 //	func main() {
 //		pulumi.Run(func(ctx *pulumi.Context) error {
-//			exampleBucketV2, err := s3.NewBucketV2(ctx, "exampleBucketV2", nil)
+//			example, err := s3.NewBucketV2(ctx, "example", &s3.BucketV2Args{
+//				Bucket: pulumi.String("my-tf-example-bucket"),
+//			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = s3.NewBucketAclV2(ctx, "exampleBucketAclV2", &s3.BucketAclV2Args{
-//				Bucket: exampleBucketV2.ID(),
+//			_, err = s3.NewBucketAclV2(ctx, "example", &s3.BucketAclV2Args{
+//				Bucket: example.ID(),
 //				Acl:    pulumi.String("private"),
 //			})
 //			if err != nil {
 //				return err
 //			}
-//			logBucket, err := s3.NewBucketV2(ctx, "logBucket", nil)
+//			logBucket, err := s3.NewBucketV2(ctx, "log_bucket", &s3.BucketV2Args{
+//				Bucket: pulumi.String("my-tf-log-bucket"),
+//			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = s3.NewBucketAclV2(ctx, "logBucketAcl", &s3.BucketAclV2Args{
+//			_, err = s3.NewBucketAclV2(ctx, "log_bucket_acl", &s3.BucketAclV2Args{
 //				Bucket: logBucket.ID(),
 //				Acl:    pulumi.String("log-delivery-write"),
 //			})
 //			if err != nil {
 //				return err
 //			}
-//			_, err = s3.NewBucketLoggingV2(ctx, "exampleBucketLoggingV2", &s3.BucketLoggingV2Args{
-//				Bucket:       exampleBucketV2.ID(),
+//			_, err = s3.NewBucketLoggingV2(ctx, "example", &s3.BucketLoggingV2Args{
+//				Bucket:       example.ID(),
 //				TargetBucket: logBucket.ID(),
 //				TargetPrefix: pulumi.String("log/"),
 //			})
@@ -69,6 +74,7 @@ import (
 //	}
 //
 // ```
+// <!--End PulumiCodeChooser -->
 //
 // ## Import
 //
@@ -79,17 +85,12 @@ import (
 // If the owner (account ID) of the source bucket is the same account used to configure the AWS Provider, import using the `bucket`:
 //
 // ```sh
-//
-//	$ pulumi import aws:s3/bucketLoggingV2:BucketLoggingV2 example bucket-name
-//
+// $ pulumi import aws:s3/bucketLoggingV2:BucketLoggingV2 example bucket-name
 // ```
-//
-//	If the owner (account ID) of the source bucket differs from the account used to configure the AWS Provider, import using the `bucket` and `expected_bucket_owner` separated by a comma (`,`):
+// If the owner (account ID) of the source bucket differs from the account used to configure the AWS Provider, import using the `bucket` and `expected_bucket_owner` separated by a comma (`,`):
 //
 // ```sh
-//
-//	$ pulumi import aws:s3/bucketLoggingV2:BucketLoggingV2 example bucket-name,123456789012
-//
+// $ pulumi import aws:s3/bucketLoggingV2:BucketLoggingV2 example bucket-name,123456789012
 // ```
 type BucketLoggingV2 struct {
 	pulumi.CustomResourceState
